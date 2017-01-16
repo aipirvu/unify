@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Unify.Data;
 
 namespace Unify.Api
 {
@@ -38,6 +39,9 @@ namespace Unify.Api
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+
+            //app
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

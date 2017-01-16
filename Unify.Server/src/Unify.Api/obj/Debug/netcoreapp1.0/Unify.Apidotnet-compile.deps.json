@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0/",
-    "signature": "3c9b91c95976a8223c80197771f5ee9ee8b2a374"
+    "signature": "64fe7c0f4fed427a1f8c4ad60f63ade1ebd812fe"
   },
   "compilationOptions": {
     "defines": [
@@ -28,7 +28,9 @@
           "Microsoft.Extensions.Logging": "1.0.0",
           "Microsoft.Extensions.Logging.Console": "1.0.0",
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0"
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+          "Unify.Common": "1.0.0",
+          "Unify.Data": "1.0.0"
         },
         "compile": {
           "Unify.Api.dll": {}
@@ -1141,6 +1143,43 @@
           "ref/netstandard1.3/Microsoft.Win32.Registry.dll": {}
         }
       },
+      "MongoDB.Bson/2.4.1": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Diagnostics.Process": "4.1.0",
+          "System.Dynamic.Runtime": "4.0.11",
+          "System.Reflection.Emit.Lightweight": "4.0.1"
+        },
+        "compile": {
+          "lib/netstandard1.5/MongoDB.Bson.dll": {}
+        }
+      },
+      "MongoDB.Driver/2.4.1": {
+        "dependencies": {
+          "MongoDB.Bson": "2.4.1",
+          "MongoDB.Driver.Core": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "System.Linq.Queryable": "4.0.1"
+        },
+        "compile": {
+          "lib/netstandard1.5/MongoDB.Driver.dll": {}
+        }
+      },
+      "MongoDB.Driver.Core/2.4.1": {
+        "dependencies": {
+          "MongoDB.Bson": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.Specialized": "4.0.1",
+          "System.Diagnostics.TraceSource": "4.0.0",
+          "System.Net.NameResolution": "4.0.0",
+          "System.Net.Security": "4.0.0",
+          "System.Security.SecureString": "4.0.0"
+        },
+        "compile": {
+          "lib/netstandard1.5/MongoDB.Driver.Core.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.1",
@@ -1332,6 +1371,9 @@
           "System.Runtime": "4.1.0",
           "System.Runtime.Extensions": "4.1.0",
           "System.Threading": "4.0.11"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Collections.Specialized.dll": {}
         }
       },
       "System.ComponentModel/4.0.1": {
@@ -1496,6 +1538,22 @@
         },
         "compile": {
           "ref/netstandard1.0/System.Diagnostics.Tools.dll": {}
+        }
+      },
+      "System.Diagnostics.TraceSource/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Collections": "4.0.11",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Globalization": "4.0.11",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "runtime.native.System": "4.0.0"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Diagnostics.TraceSource.dll": {}
         }
       },
       "System.Diagnostics.Tracing/4.1.0": {
@@ -2340,6 +2398,21 @@
           "ref/netstandard1.3/System.Security.Principal.Windows.dll": {}
         }
       },
+      "System.Security.SecureString/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Handles": "4.0.1",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Security.Cryptography.Primitives": "4.0.0",
+          "System.Text.Encoding": "4.0.11",
+          "System.Threading": "4.0.11"
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Security.SecureString.dll": {}
+        }
+      },
       "System.Text.Encoding/4.0.11": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.1",
@@ -2581,6 +2654,25 @@
           "System.Xml.XDocument": "4.0.11",
           "System.Xml.XPath": "4.0.1"
         }
+      },
+      "Unify.Common/1.0.0": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.0"
+        },
+        "compile": {
+          "Unify.Common.dll": {}
+        }
+      },
+      "Unify.Data/1.0.0": {
+        "dependencies": {
+          "MongoDB.Driver": "2.4.1",
+          "MongoDB.Bson": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "Unify.Common": "1.0.0"
+        },
+        "compile": {
+          "Unify.Data.dll": {}
+        }
       }
     },
     ".NETCoreApp,Version=v1.0/": {
@@ -2598,7 +2690,9 @@
           "Microsoft.Extensions.Logging": "1.0.0",
           "Microsoft.Extensions.Logging.Console": "1.0.0",
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0"
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+          "Unify.Common": "1.0.0",
+          "Unify.Data": "1.0.0"
         },
         "runtime": {
           "Unify.Api.dll": {}
@@ -3702,6 +3796,43 @@
           "System.Runtime.InteropServices": "4.1.0"
         }
       },
+      "MongoDB.Bson/2.4.1": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Diagnostics.Process": "4.1.0",
+          "System.Dynamic.Runtime": "4.0.11",
+          "System.Reflection.Emit.Lightweight": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.5/MongoDB.Bson.dll": {}
+        }
+      },
+      "MongoDB.Driver/2.4.1": {
+        "dependencies": {
+          "MongoDB.Bson": "2.4.1",
+          "MongoDB.Driver.Core": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "System.Linq.Queryable": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.5/MongoDB.Driver.dll": {}
+        }
+      },
+      "MongoDB.Driver.Core/2.4.1": {
+        "dependencies": {
+          "MongoDB.Bson": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.Specialized": "4.0.1",
+          "System.Diagnostics.TraceSource": "4.0.0",
+          "System.Net.NameResolution": "4.0.0",
+          "System.Net.Security": "4.0.0",
+          "System.Security.SecureString": "4.0.0"
+        },
+        "runtime": {
+          "lib/netstandard1.5/MongoDB.Driver.Core.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.1",
@@ -4047,6 +4178,19 @@
           "System.Runtime": "4.1.0"
         }
       },
+      "System.Diagnostics.TraceSource/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Collections": "4.0.11",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Globalization": "4.0.11",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "runtime.native.System": "4.0.0"
+        }
+      },
       "System.Diagnostics.Tracing/4.1.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.1",
@@ -4139,6 +4283,9 @@
           "System.Runtime": "4.1.0",
           "System.Runtime.Extensions": "4.1.0",
           "System.Text.Encoding": "4.0.11"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.IO.Compression.ZipFile.dll": {}
         }
       },
       "System.IO.FileSystem/4.0.1": {
@@ -4269,6 +4416,9 @@
           "System.Reflection.Extensions": "4.0.1",
           "System.Resources.ResourceManager": "4.0.1",
           "System.Runtime": "4.1.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/System.Linq.Queryable.dll": {}
         }
       },
       "System.Net.Http/4.1.0": {
@@ -4790,6 +4940,18 @@
           "System.Threading": "4.0.11"
         }
       },
+      "System.Security.SecureString/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Handles": "4.0.1",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Security.Cryptography.Primitives": "4.0.0",
+          "System.Text.Encoding": "4.0.11",
+          "System.Threading": "4.0.11"
+        }
+      },
       "System.Text.Encoding/4.0.11": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.0.1",
@@ -5024,6 +5186,25 @@
         },
         "runtime": {
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
+        }
+      },
+      "Unify.Common/1.0.0": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.0"
+        },
+        "runtime": {
+          "Unify.Common.dll": {}
+        }
+      },
+      "Unify.Data/1.0.0": {
+        "dependencies": {
+          "MongoDB.Driver": "2.4.1",
+          "MongoDB.Bson": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "Unify.Common": "1.0.0"
+        },
+        "runtime": {
+          "Unify.Data.dll": {}
         }
       }
     }
@@ -5474,6 +5655,21 @@
       "serviceable": true,
       "sha512": "sha512-q+eLtROUAQ3OxYA5mpQrgyFgzLQxIyrfT2eLpYX5IEPlHmIio2nh4F5bgOaQoGOV865kFKZZso9Oq9RlazvXtg=="
     },
+    "MongoDB.Bson/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D6GBX2shpGGlQbIw8GIPYqvBsHvdtyFl/Gg16WmLUVXAUJnPYTivEsOoThs7vx0Uco425B/rr9pP7RHHz5xNQg=="
+    },
+    "MongoDB.Driver/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xsp1BIr9WvvaGDIQFCQvty0ZAUl4WBj3DgvToleuljeYFa+W2d6nIMgAEKsUTuu2nC+3pNtVFbrKsryNU46+ag=="
+    },
+    "MongoDB.Driver.Core/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iJ020RGVzCm6h72qKF155XRQhx/D5xKOh9Z5MBTpFlr2ndGTSpskycPPCeNrjl/TSr1RBNg2+K03kzFD5xCu/Q=="
+    },
     "NETStandard.Library/1.6.0": {
       "type": "package",
       "serviceable": true,
@@ -5603,6 +5799,11 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-xBfJ8pnd4C17dWaC9FM6aShzbJcRNMChUMD42I6772KGGrqaFdumwhn9OdM68erj1ueNo3xdQ1EwiFjK5k8p0g=="
+    },
+    "System.Diagnostics.TraceSource/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6WVCczFZKXwpWpzd/iJkYnsmWTSFFiU24Xx/YdHXBcu+nFI/ehTgeqdJQFbtRPzbrO3KtRNjvkhtj4t5/WwWsA=="
     },
     "System.Diagnostics.Tracing/4.1.0": {
       "type": "package",
@@ -5884,6 +6085,11 @@
       "serviceable": true,
       "sha512": "sha512-iFx15AF3RMEPZn3COh8+Bb2Thv2zsmLd93RchS1b8Mj5SNYeGqbYNCSn5AES1+gq56p4ujGZPrl0xN7ngkXOHg=="
     },
+    "System.Security.SecureString/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sqzq9GD6/b0yqPuMpgIKBuoLf4VKAj8oAfh4kXSzPaN6eoKY3hRi9C5L27uip25qlU+BGPfb0xh2Rmbwc4jFVA=="
+    },
     "System.Text.Encoding/4.0.11": {
       "type": "package",
       "serviceable": true,
@@ -5978,6 +6184,16 @@
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-FLhdYJx4331oGovQypQ8JIw2kEmNzCsjVOVYY/16kZTUoquZG85oVn7yUhBE2OZt1yGPSXAL0HTEfzjlbNpM7Q=="
+    },
+    "Unify.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unify.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

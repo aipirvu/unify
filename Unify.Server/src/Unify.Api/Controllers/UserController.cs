@@ -3,44 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Unify.Common.Entities;
+using Unify.Data;
 
 namespace Unify.Api.Controllers
 {
     [Route("api/[controller]")]
     public class UserController : Controller
     {
-        //SAMPLE ENDPOINTS:
+        private IUserRepository _userRepository;
 
-        // GET api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        public UserController(IUserRepository userRepository)
         {
-            return new string[] { "value1", "value2" };
+            _userRepository = userRepository;
         }
 
-        // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public User Get(string id)
         {
-            return "value";
+            return _userRepository.GetUser(id);
         }
 
-        // POST api/values
+        [HttpGet]
+        public IEnumerable<User> Get()
+        {
+            return _userRepository.GetUsers();
+        }
+
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post([FromBody] User user)
         {
+            _userRepository.CreateUser(user);
         }
 
-        // PUT api/values/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public void Put(int id, [FromBody]string username)
         {
         }
 
-        // DELETE api/values/5
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+
+        //TEST
+        [HttpGet("/echo/{echo}")]
+        public string Echo(string echo)
+        {
+            return echo;
         }
     }
 }

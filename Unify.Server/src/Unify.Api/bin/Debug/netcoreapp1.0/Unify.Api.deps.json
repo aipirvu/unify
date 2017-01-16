@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0",
-    "signature": "e368e1b711c15197d9be8224975aa41838512474"
+    "signature": "b7102b53de2bcec636cb9e1fce0f1aed4a023212"
   },
   "compilationOptions": {
     "defines": [
@@ -28,7 +28,9 @@
           "Microsoft.Extensions.Logging": "1.0.0",
           "Microsoft.Extensions.Logging.Console": "1.0.0",
           "Microsoft.Extensions.Logging.Debug": "1.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0"
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+          "Unify.Common": "1.0.0",
+          "Unify.Data": "1.0.0"
         },
         "runtime": {
           "Unify.Api.dll": {}
@@ -1152,6 +1154,52 @@
           "lib/netstandard1.1/Microsoft.Net.Http.Headers.dll": {}
         }
       },
+      "MongoDB.Bson/2.4.1": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Diagnostics.Process": "4.1.0",
+          "System.Dynamic.Runtime": "4.0.11",
+          "System.Reflection.Emit.Lightweight": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.5/MongoDB.Bson.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/MongoDB.Bson.dll": {}
+        }
+      },
+      "MongoDB.Driver/2.4.1": {
+        "dependencies": {
+          "MongoDB.Bson": "2.4.1",
+          "MongoDB.Driver.Core": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "System.Linq.Queryable": "4.0.1"
+        },
+        "runtime": {
+          "lib/netstandard1.5/MongoDB.Driver.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/MongoDB.Driver.dll": {}
+        }
+      },
+      "MongoDB.Driver.Core/2.4.1": {
+        "dependencies": {
+          "MongoDB.Bson": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "System.Collections.Specialized": "4.0.1",
+          "System.Diagnostics.TraceSource": "4.0.0",
+          "System.Net.NameResolution": "4.0.0",
+          "System.Net.Security": "4.0.0",
+          "System.Security.SecureString": "4.0.0"
+        },
+        "runtime": {
+          "lib/netstandard1.5/MongoDB.Driver.Core.dll": {}
+        },
+        "compile": {
+          "lib/netstandard1.5/MongoDB.Driver.Core.dll": {}
+        }
+      },
       "Newtonsoft.Json/9.0.1": {
         "dependencies": {
           "Microsoft.CSharp": "4.0.1",
@@ -1212,6 +1260,9 @@
         },
         "runtime": {
           "lib/netstandard1.3/System.Collections.Specialized.dll": {}
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Collections.Specialized.dll": {}
         }
       },
       "System.ComponentModel.Primitives/4.1.0": {
@@ -1263,6 +1314,32 @@
           "ref/netstandard1.0/System.Diagnostics.Contracts.dll": {}
         }
       },
+      "System.Diagnostics.TraceSource/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Collections": "4.0.11",
+          "System.Diagnostics.Debug": "4.0.11",
+          "System.Globalization": "4.0.11",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Threading": "4.0.11",
+          "runtime.native.System": "4.0.0"
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "rid": "unix",
+            "assetType": "runtime"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Diagnostics.TraceSource.dll": {
+            "rid": "win",
+            "assetType": "runtime"
+          }
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Diagnostics.TraceSource.dll": {}
+        }
+      },
       "System.Net.WebSockets/4.0.0": {
         "dependencies": {
           "Microsoft.Win32.Primitives": "4.0.1",
@@ -1289,6 +1366,31 @@
           "ref/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
         }
       },
+      "System.Security.SecureString/4.0.0": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "1.0.1",
+          "System.Resources.ResourceManager": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Handles": "4.0.1",
+          "System.Runtime.InteropServices": "4.1.0",
+          "System.Security.Cryptography.Primitives": "4.0.0",
+          "System.Text.Encoding": "4.0.11",
+          "System.Threading": "4.0.11"
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netstandard1.3/System.Security.SecureString.dll": {
+            "rid": "unix",
+            "assetType": "runtime"
+          },
+          "runtimes/win/lib/netstandard1.3/System.Security.SecureString.dll": {
+            "rid": "win",
+            "assetType": "runtime"
+          }
+        },
+        "compile": {
+          "ref/netstandard1.3/System.Security.SecureString.dll": {}
+        }
+      },
       "System.Text.Encodings.Web/4.0.0": {
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.11",
@@ -1304,6 +1406,31 @@
         },
         "compile": {
           "lib/netstandard1.0/System.Text.Encodings.Web.dll": {}
+        }
+      },
+      "Unify.Common/1.0.0": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.0"
+        },
+        "runtime": {
+          "Unify.Common.dll": {}
+        },
+        "compile": {
+          "Unify.Common.dll": {}
+        }
+      },
+      "Unify.Data/1.0.0": {
+        "dependencies": {
+          "MongoDB.Driver": "2.4.1",
+          "MongoDB.Bson": "2.4.1",
+          "NETStandard.Library": "1.6.0",
+          "Unify.Common": "1.0.0"
+        },
+        "runtime": {
+          "Unify.Data.dll": {}
+        },
+        "compile": {
+          "Unify.Data.dll": {}
         }
       },
       "Libuv/1.9.0": {
@@ -3296,6 +3423,21 @@
       "serviceable": true,
       "sha512": "sha512-1lr92itF1fKR2oEQ6gk1IUsuCgp7UMlf/b1sjlAyuDeUnttj39ra59GQHYpomglJX1UVNpi1/cSBbEsXoNeIhw=="
     },
+    "MongoDB.Bson/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-D6GBX2shpGGlQbIw8GIPYqvBsHvdtyFl/Gg16WmLUVXAUJnPYTivEsOoThs7vx0Uco425B/rr9pP7RHHz5xNQg=="
+    },
+    "MongoDB.Driver/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xsp1BIr9WvvaGDIQFCQvty0ZAUl4WBj3DgvToleuljeYFa+W2d6nIMgAEKsUTuu2nC+3pNtVFbrKsryNU46+ag=="
+    },
+    "MongoDB.Driver.Core/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-iJ020RGVzCm6h72qKF155XRQhx/D5xKOh9Z5MBTpFlr2ndGTSpskycPPCeNrjl/TSr1RBNg2+K03kzFD5xCu/Q=="
+    },
     "Newtonsoft.Json/9.0.1": {
       "type": "package",
       "serviceable": true,
@@ -3326,6 +3468,11 @@
       "serviceable": true,
       "sha512": "sha512-HvQQjy712vnlpPxaloZYkuE78Gn353L0SJLJVeLcNASeg9c4qla2a1Xq8I7B3jZoDzKPtHTkyVO7AZ5tpeQGuA=="
     },
+    "System.Diagnostics.TraceSource/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6WVCczFZKXwpWpzd/iJkYnsmWTSFFiU24Xx/YdHXBcu+nFI/ehTgeqdJQFbtRPzbrO3KtRNjvkhtj4t5/WwWsA=="
+    },
     "System.Net.WebSockets/4.0.0": {
       "type": "package",
       "serviceable": true,
@@ -3336,10 +3483,25 @@
       "serviceable": true,
       "sha512": "sha512-HZ6Du5QrTG8MNJbf4e4qMO3JRAkIboGT5Fk804uZtg3Gq516S7hAqTm2UZKUHa7/6HUGdVy3AqMQKbns06G/cg=="
     },
+    "System.Security.SecureString/4.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sqzq9GD6/b0yqPuMpgIKBuoLf4VKAj8oAfh4kXSzPaN6eoKY3hRi9C5L27uip25qlU+BGPfb0xh2Rmbwc4jFVA=="
+    },
     "System.Text.Encodings.Web/4.0.0": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-TWZnuiJgPDAEEUfobD7njXvSVR2Toz+jvKWds6yL4oSztmKQfnWzucczjzA+6Dv1bktBdY71sZW1YN0X6m9chQ=="
+    },
+    "Unify.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unify.Data/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Libuv/1.9.0": {
       "type": "package",
