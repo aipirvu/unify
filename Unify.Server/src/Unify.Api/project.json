@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "MongoDB.Bson": "2.4.1",
     "Microsoft.NETCore.App": {
       "version": "1.0.1",
       "type": "platform"

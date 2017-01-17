@@ -5,7 +5,9 @@
     "MongoDB.Driver": "2.4.1",
     "MongoDB.Bson": "2.4.1",
     "NETStandard.Library": "1.6.0",
-    "Unify.Common": "1.0.0-*"
+    "Unify.Common": "1.0.0-*",
+    "System.Reflection.TypeExtensions": "4.1.0",
+    "Microsoft.EntityFrameworkCore": "1.0.1"
   },
 
   "frameworks": {

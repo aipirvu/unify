@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Unify.Data;
+using Unify.Common.Interfaces;
+using Unify.Common.Entities;
+using MongoDB.Driver;
 
 namespace Unify.Api
 {
@@ -41,7 +44,8 @@ namespace Unify.Api
             services.AddMvc();
 
             //app
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddTransient<IRepository<IUser>, UserRepository>();
+            services.AddTransient<IMongoClient, MongoClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
