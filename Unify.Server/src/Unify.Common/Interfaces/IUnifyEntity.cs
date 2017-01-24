@@ -8,7 +8,8 @@ namespace Unify.Common.Interfaces
 {
     public interface IUnifyEntity
     {
-        ObjectId Id { get; set; }
-        string IdHash { get; }
+        //ObjectId Id { get; set; }
+        //string IdHash { get; }
+        string Id { get; set; }
     }
 }

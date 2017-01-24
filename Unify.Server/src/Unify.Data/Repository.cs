@@ -55,18 +55,19 @@ namespace Unify.Data
 
         public void Create(Entity entity)
         {
+            entity.Id = ObjectId.GenerateNewId().ToString();
             _collection.InsertOne(entity.ToBsonDocument());
         }
 
         public void Update(Entity entity)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", entity.Id);
-            _collection.FindOneAndUpdate(filter, entity.ToBsonDocument());
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(entity.Id));
+            _collection.ReplaceOne(filter, entity.ToBsonDocument());
         }
 
-        public void Delete(string idHash)
+        public void Delete(string id)
         {
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(idHash));
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(id));
             _collection.FindOneAndDelete(filter);
         }
 
