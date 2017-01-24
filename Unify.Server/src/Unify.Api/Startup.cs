@@ -11,6 +11,7 @@ using Unify.Data;
 using Unify.Common.Interfaces;
 using Unify.Common.Entities;
 using MongoDB.Driver;
+using Unify.Api.CustomCoverters;
 
 namespace Unify.Api
 {
@@ -41,11 +42,19 @@ namespace Unify.Api
             // Add framework services.
             services.AddApplicationInsightsTelemetry(Configuration);
 
-            services.AddMvc();
+            services.AddMvc()
+                    .AddJsonOptions(options =>
+                    {
+                        //https://brettedotnet.wordpress.com/2014/07/16/web-api-and-interface-parameters/
+                        options.SerializerSettings.Converters.Add(new UserCustomConverter());
+                    });
 
             //app
+            services.AddTransient<IUser, User>();
             services.AddTransient<IRepository<IUser>, UserRepository>();
             services.AddTransient<IMongoClient, MongoClient>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

@@ -10,6 +10,7 @@ using Unify.Common.Interfaces;
 namespace Unify.Api.Controllers
 {
     public abstract class UnifyController<Entity> : Controller
+        where Entity : class, IUnifyEntity
     {
         private IRepository<Entity> _repository;
 
@@ -18,10 +19,10 @@ namespace Unify.Api.Controllers
             _repository = repository;
         }
 
-        [HttpGet("{id}")]
-        public Entity Get(string id)
+        [HttpGet("{idHash}")]
+        public Entity Get(string idHash)
         {
-            return _repository.Get(id);
+            return _repository.Get(idHash);
         }
 
         [HttpGet]
@@ -31,7 +32,7 @@ namespace Unify.Api.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] Entity user)
+        public void Post([FromBody]Entity user)
         {
             _repository.Create(user);
         }
@@ -39,12 +40,16 @@ namespace Unify.Api.Controllers
         [HttpPut]
         public void Put([FromBody]Entity user)
         {
+            /* todo fix ObjectId serialization issues:
+             * http://stackoverflow.com/questions/7695730/mongodb-c-id-serialization-best-pattern/7982411#7982411
+             * */
             _repository.Update(user);
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{idHash}")]
+        public void Delete(string idHash)
         {
+            _repository.Delete(idHash);
         }
 
         //TEST

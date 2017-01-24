@@ -32,9 +32,15 @@ namespace Unify.Data
 
         }
 
-        public Entity Get(string id)
+        public Entity Get(string idHash)
         {
-            throw new NotImplementedException();
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(idHash));
+            var bsonDocument = _collection.Find(filter).FirstOrDefault();
+            if (null != bsonDocument)
+            {
+                return (Entity)_bsonDeserializer.Invoke(this, new object[] { bsonDocument, null });
+            }
+            return null;
         }
 
         public IEnumerable<Entity> Get()
@@ -54,17 +60,20 @@ namespace Unify.Data
 
         public void Update(Entity entity)
         {
-            throw new NotImplementedException();
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", entity.Id);
+            _collection.FindOneAndUpdate(filter, entity.ToBsonDocument());
         }
 
-        public void Delete(string id)
+        public void Delete(string idHash)
         {
-            throw new NotImplementedException();
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(idHash));
+            _collection.FindOneAndDelete(filter);
         }
 
         private Type GetConcreteType()
         {
-            /* The concrete types should be determined from assemblies but this is not available in the current version of .NET Core
+            /* todo
+             * The concrete types should be determined from assemblies but this is not available in the current version of .NET Core
              * Must be changed in the expected version 1.1
              * 
              * Also the Entity itself must be verified if it is a concrete type and use that as first option

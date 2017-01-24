@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Unify.Common.Entities;
+using Unify.Common.Interfaces;
 
 namespace Unify.Data
 {
@@ -13,6 +14,6 @@ namespace Unify.Data
         void Create(Entity entity);
         void Update(Entity entity);
         void Delete(string id);
-        
+
     }
 }
