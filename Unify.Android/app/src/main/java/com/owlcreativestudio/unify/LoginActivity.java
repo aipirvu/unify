@@ -17,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-
 /**
  * A login screen that offers login via email/password.
  */
@@ -29,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private UserLoginTask mAuthTask = null;
+    private UserRegisterTask mRegisterTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -44,13 +44,27 @@ public class LoginActivity extends AppCompatActivity {
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
+
+        Button registerButton = (Button) findViewById(R.id.register_button);
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerAccount();
+            }
+        });
+
+        Button facebookSignInButton = (Button) findViewById(R.id.facebook_sign_in_button);
+        Button googleSignInButton = (Button) findViewById(R.id.google_sign_in_button);
+
+        facebookSignInButton.setActivated(false);
+        googleSignInButton.setActivated(false);
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
@@ -109,6 +123,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void registerAccount() {
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+        //todo some validation here
+        mRegisterTask = new UserRegisterTask(email, password);
+        mRegisterTask.execute((Void) null);
+    }
+
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
@@ -155,10 +177,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
@@ -188,7 +206,52 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
 
-            // TODO: register the new account here.
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
+            if (success) {
+                finish();
+            } else {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
+
+    public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mEmail;
+        private final String mPassword;
+
+        UserRegisterTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            try {
+                // Simulate network access.
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                return false;
+            }
+
+            //todo register account
+
             return true;
         }
 
