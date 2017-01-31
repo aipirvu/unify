@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify;
+package com.owlcreativestudio.unify.Helpers;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,8 +12,12 @@ import android.view.View;
 
 public class UnifyCommonHelpers {
     public static void simulateWait() {
+        simulateWait(2000);
+    }
+
+    public static void simulateWait(int miliseconds) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(miliseconds);
         } catch (InterruptedException e) {
         }
     }

@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.owlcreativestudio.unify.Helpers.UnifyCommonHelpers;
+
 
 /**
  * A login screen that offers login via email/password.

@@ -6,10 +6,11 @@ import android.annotation.TargetApi;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+
+import com.owlcreativestudio.unify.Helpers.UnifyCommonHelpers;
 
 
 /**
@@ -29,10 +30,12 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void register(View view) {
+        EditText usernameEditText = (EditText) findViewById(R.id.username);
         EditText emailEditText = (EditText) findViewById(R.id.email);
         EditText passwordEditText = (EditText) findViewById(R.id.password);
         EditText confirmPasswordEditText = (EditText) findViewById(R.id.confirm_password);
 
+        String username = usernameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         String confirmationPassword = confirmPasswordEditText.getText().toString();
@@ -42,7 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         showProgress(true);
-        UserRegisterTask registerTask = new UserRegisterTask(email, password);
+        UserRegisterTask registerTask = new UserRegisterTask(username, email, password);
         registerTask.execute();
     }
 
@@ -83,10 +86,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
+        private final String mUsername;
 
-        UserRegisterTask(String email, String password) {
+        UserRegisterTask(String username, String email, String password) {
             mEmail = email;
             mPassword = password;
+            mUsername = username;
         }
 
         @Override
