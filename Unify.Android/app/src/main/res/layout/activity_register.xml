@@ -20,7 +20,7 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/login_form"
+        android:id="@+id/register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -63,35 +63,23 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/sign_in_button"
-                style="@android:style/TextAppearance.Material.Small"
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:onClick="signIn"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/facebook_sign_in_button"
-                style="@android:style/TextAppearance.Material.Small"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:enabled="false"
-                android:text="@string/action_sing_in_facebook"
-                android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_confirm_password"
+                    android:imeActionId="@+id/login"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:singleLine="true" />
 
-            <Button
-                android:id="@+id/google_sign_in_button"
-                style="@android:style/TextAppearance.Material.Small"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:enabled="false"
-                android:text="@string/action_sign_in_google"
-                android:textStyle="bold" />
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/register_button"

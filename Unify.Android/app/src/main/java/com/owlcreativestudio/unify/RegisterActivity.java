@@ -3,12 +3,11 @@ package com.owlcreativestudio.unify;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
-
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -16,40 +15,37 @@ import android.widget.EditText;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity {
-
+public class RegisterActivity extends AppCompatActivity {
     private View mProgressView;
-    private View mLoginFormView;
+    private View mRegisterFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
 
-        mLoginFormView = findViewById(R.id.login_form);
+        mRegisterFormView = findViewById(R.id.register_form);
         mProgressView = findViewById(R.id.login_progress);
     }
 
-    public void signIn(View view) {
+    public void register(View view) {
         EditText emailEditText = (EditText) findViewById(R.id.email);
         EditText passwordEditText = (EditText) findViewById(R.id.password);
+        EditText confirmPasswordEditText = (EditText) findViewById(R.id.confirm_password);
 
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+        String confirmationPassword = confirmPasswordEditText.getText().toString();
 
-        Intent intent = new Intent(this, FullscreenActivity.class);
+        if (!password.equals(confirmationPassword)) {
+            return;
+        }
 
         showProgress(true);
-        UserLoginTask loginTask = new UserLoginTask(email, password, intent);
-        loginTask.execute();
+        UserRegisterTask registerTask = new UserRegisterTask(email, password);
+        registerTask.execute();
     }
 
-    public void register(View view) {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
-    }
-
-    //// TODO: 31-Jan-17 Find a method to reuse this showProgress code instead of duplicating it in every activity
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -58,12 +54,12 @@ public class LoginActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -79,36 +75,30 @@ public class LoginActivity extends AppCompatActivity {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mRegisterFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
-    private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    private class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
-        private final Intent mPostExecuteSuccessIntent;
 
-        UserLoginTask(String email, String password, Intent postExecuteSuccessIntent) {
+        UserRegisterTask(String email, String password) {
             mEmail = email;
             mPassword = password;
-            mPostExecuteSuccessIntent = postExecuteSuccessIntent;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             UnifyCommonHelpers.simulateWait();
-            //// TODO: 31-Jan-17 start the login process using the provided credentials
-            return mEmail.equals("jack");
+            //// TODO: 31-Jan-17 start the registration process
+            return true;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             showProgress(false);
-            if (success) {
-                startActivity(mPostExecuteSuccessIntent);
-                finish();
-            }
         }
 
         @Override
