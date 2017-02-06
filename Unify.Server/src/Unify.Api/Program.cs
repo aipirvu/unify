@@ -17,6 +17,7 @@ namespace Unify.Api
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
+                .UseUrls("http://192.168.1.3:5000")
                 .Build();
 
             host.Run();

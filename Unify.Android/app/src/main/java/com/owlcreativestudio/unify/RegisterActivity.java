@@ -10,7 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.owlcreativestudio.unify.Entities.User;
+import com.owlcreativestudio.unify.Helpers.HttpHelper;
 import com.owlcreativestudio.unify.Helpers.UnifyCommonHelpers;
+import com.owlcreativestudio.unify.Helpers.UrlHelper;
 
 
 /**
@@ -96,8 +99,23 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            UnifyCommonHelpers.simulateWait();
-            //// TODO: 31-Jan-17 start the registration process
+//            UnifyCommonHelpers.simulateWait();
+
+            User user = new User();
+//            user.setUsername(mUsername);
+//            user.setEmail(mEmail);
+//            user.setPassword(mPassword);
+
+            user.setUsername("Jack");
+            user.setEmail("Jack@mail.test");
+            user.setPassword("jackpassword");
+
+            try {
+                HttpHelper.Post(UrlHelper.getUserUrl(), user);
+            }
+            catch (Exception ex){
+                return false;
+            }
             return true;
         }
 
