@@ -184,6 +184,8 @@
 -resource:"C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\obj\Debug\netcoreapp1.0\Unify.Apidotnet-compile.deps.json",Unify.Api.deps.json
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\Program.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\Startup.cs"
+"C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\Controllers\LoginController.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\Controllers\UnifyController.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\Controllers\UserController.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\UserCustomConverter.cs"
+"C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\Login.cs"

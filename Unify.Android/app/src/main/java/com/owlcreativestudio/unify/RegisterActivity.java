@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
-import com.owlcreativestudio.unify.Entities.User;
+import com.owlcreativestudio.unify.Models.User;
 import com.owlcreativestudio.unify.Helpers.HttpHelper;
 import com.owlcreativestudio.unify.Helpers.UrlHelper;
 

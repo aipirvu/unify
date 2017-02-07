@@ -14,4 +14,8 @@ public class UrlHelper {
     public static String getUserUrl(String id) {
         return getUserUrl() + "/" + id;
     }
+
+    public static String getLoginUrl() {
+        return BASE_ADDRESS + "/login";
+    }
 }

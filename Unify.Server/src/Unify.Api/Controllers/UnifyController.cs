@@ -19,10 +19,10 @@ namespace Unify.Api.Controllers
             _repository = repository;
         }
 
-        [HttpGet("{idHash}")]
-        public Entity Get(string idHash)
+        [HttpGet("{id}")]
+        public Entity Get(string id)
         {
-            return _repository.Get(idHash);
+            return _repository.Get(id);
         }
 
         [HttpGet]
@@ -46,17 +46,10 @@ namespace Unify.Api.Controllers
             _repository.Update(user);
         }
 
-        [HttpDelete("{idHash}")]
-        public void Delete(string idHash)
+        [HttpDelete("{id}")]
+        public void Delete(string id)
         {
-            _repository.Delete(idHash);
-        }
-
-        //TEST
-        [HttpGet("/echo/{echo}")]
-        public string Echo(string echo)
-        {
-            return echo;
+            _repository.Delete(id);
         }
     }
 }

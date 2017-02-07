@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify.Entities;
+package com.owlcreativestudio.unify.Models;
 
 /**
  * Created by aipir on 06-Feb-17.

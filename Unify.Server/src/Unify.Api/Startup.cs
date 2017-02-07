@@ -12,6 +12,7 @@ using Unify.Common.Interfaces;
 using Unify.Common.Entities;
 using MongoDB.Driver;
 using Unify.Api.CustomCoverters;
+using MongoDB.Bson.Serialization;
 
 namespace Unify.Api
 {
@@ -52,9 +53,10 @@ namespace Unify.Api
             //app
             services.AddTransient<IUser, User>();
             services.AddTransient<IRepository<IUser>, UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IMongoClient, MongoClient>();
 
-
+            ConfigureMongoDBClassMap();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -69,5 +71,11 @@ namespace Unify.Api
 
             app.UseMvc();
         }
+        
+        public void ConfigureMongoDBClassMap()
+        {
+            BsonClassMap.RegisterClassMap<User>();
+        }
+
     }
 }

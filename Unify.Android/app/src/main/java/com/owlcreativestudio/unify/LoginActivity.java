@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.owlcreativestudio.unify.Helpers.UnifyCommonHelpers;
+import com.owlcreativestudio.unify.Helpers.HttpHelper;
+import com.owlcreativestudio.unify.Helpers.UrlHelper;
+import com.owlcreativestudio.unify.Models.Login;
 
 
 /**
@@ -99,9 +101,15 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            UnifyCommonHelpers.simulateWait();
-            //// TODO: 31-Jan-17 start the login process using the provided credentials
-            return mEmail.equals("jack");
+            Login login = new Login();
+            login.setEmail(mEmail);
+            login.setPassword(mPassword);
+            try {
+                HttpHelper.Post(UrlHelper.getLoginUrl(), login);
+            } catch (Exception ex) {
+                return false;
+            }
+            return true;
         }
 
         @Override

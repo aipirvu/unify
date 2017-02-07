@@ -12,9 +12,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Unify.Data
 {
-    public class UserRepository : Repository<IUser>
+    public class UserRepository : Repository<IUser>, IUserRepository
     {
         public UserRepository(IMongoClient client) : base(client, "users")
         { }
+
+        public IUser GetByEmail(string email)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("Email", email);
+            var bsonDocument = _collection.Find(filter).FirstOrDefault();
+            if (null != bsonDocument)
+            {
+                return (IUser)BsonSerializer.Deserialize<IUser>(bsonDocument);
+            }
+            return null;
+        }
     }
 }

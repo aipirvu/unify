@@ -87,6 +87,7 @@
 --reference:C:\Users\aipir\.nuget\packages\System.Xml.XDocument\4.0.11\ref\netstandard1.3\System.Xml.XDocument.dll
 --reference:C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\bin\Debug\netstandard1.6\Unify.Common.dll
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Data\IRepository.cs
+C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Data\IUserRepository.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Data\Repository.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Data\UserRepository.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Data\Properties\AssemblyInfo.cs
