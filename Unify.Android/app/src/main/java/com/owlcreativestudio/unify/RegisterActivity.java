@@ -3,6 +3,7 @@ package com.owlcreativestudio.unify;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,7 +13,6 @@ import android.widget.EditText;
 
 import com.owlcreativestudio.unify.Entities.User;
 import com.owlcreativestudio.unify.Helpers.HttpHelper;
-import com.owlcreativestudio.unify.Helpers.UnifyCommonHelpers;
 import com.owlcreativestudio.unify.Helpers.UrlHelper;
 
 
@@ -47,8 +47,10 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        Intent intent = new Intent(this, FullscreenActivity.class);
+
         showProgress(true);
-        UserRegisterTask registerTask = new UserRegisterTask(username, email, password);
+        UserRegisterTask registerTask = new UserRegisterTask(username, email, password, intent);
         registerTask.execute();
     }
 
@@ -90,30 +92,25 @@ public class RegisterActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
         private final String mUsername;
+        private final Intent mPostExecuteSuccessIntent;
 
-        UserRegisterTask(String username, String email, String password) {
+        UserRegisterTask(String username, String email, String password, Intent postExecuteSuccessIntent) {
             mEmail = email;
             mPassword = password;
             mUsername = username;
+            mPostExecuteSuccessIntent = postExecuteSuccessIntent;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
-//            UnifyCommonHelpers.simulateWait();
-
             User user = new User();
-//            user.setUsername(mUsername);
-//            user.setEmail(mEmail);
-//            user.setPassword(mPassword);
-
-            user.setUsername("Jack");
-            user.setEmail("Jack@mail.test");
-            user.setPassword("jackpassword");
+            user.setUsername(mUsername);
+            user.setEmail(mEmail);
+            user.setPassword(mPassword);
 
             try {
                 HttpHelper.Post(UrlHelper.getUserUrl(), user);
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 return false;
             }
             return true;
@@ -121,7 +118,10 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            showProgress(false);
+            if (success) {
+                startActivity(mPostExecuteSuccessIntent);
+                finish();
+            }
         }
 
         @Override

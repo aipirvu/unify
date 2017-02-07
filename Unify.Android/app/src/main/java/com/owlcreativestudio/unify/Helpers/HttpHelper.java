@@ -2,11 +2,10 @@ package com.owlcreativestudio.unify.Helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.owlcreativestudio.unify.Entities.User;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -43,16 +42,11 @@ public class HttpHelper {
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setUseCaches(false);
         connection.setDoOutput(true);
-//
-//        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-//        outputStream.writeBytes(serializedContent);
-//        outputStream.flush();
-//        outputStream.close();
 
-        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(connection.getOutputStream());
-        outputStreamWriter.write(serializedContent);
-        outputStreamWriter.flush();
-        outputStreamWriter.close();
+        OutputStream outputStream = connection.getOutputStream();
+        outputStream.write(serializedContent.getBytes());
+        outputStream.flush();
+        outputStream.close();
 
         int responseCode = connection.getResponseCode();
 
