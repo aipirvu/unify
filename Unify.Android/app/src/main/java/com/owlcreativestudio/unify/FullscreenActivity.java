@@ -1,13 +1,31 @@
 package com.owlcreativestudio.unify;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.hardware.Camera;
+import android.hardware.camera2.CameraManager;
+import android.os.Build;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.Manifest;
+
+import com.owlcreativestudio.unify.Helpers.CameraPreview;
+
+import java.util.List;
+
+import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -21,6 +39,11 @@ public class FullscreenActivity extends AppCompatActivity {
     private boolean mVisible;
     private View mContentView;
     private View mControlsView;
+
+    private String TAG = "FullscreenActivity";
+    private Camera mCamera;
+    private FrameLayout previewLayout;
+    private static final int REQUEST_CAMERA_SERVICE = 0;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -43,7 +66,6 @@ public class FullscreenActivity extends AppCompatActivity {
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
-            // Delayed display of UI elements
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
                 actionBar.show();
@@ -76,7 +98,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
+        mContentView = findViewById(R.id.master_layout);
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -91,6 +113,9 @@ public class FullscreenActivity extends AppCompatActivity {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         findViewById(R.id.settings_button).setOnTouchListener(mDelayHideTouchListener);
+
+        //Custom code
+        previewLayout = (FrameLayout) findViewById(R.id.preview_layout);
     }
 
     @Override
@@ -103,7 +128,7 @@ public class FullscreenActivity extends AppCompatActivity {
         delayedHide(100);
     }
 
-    public void settings(View view){
+    public void settings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
@@ -149,5 +174,75 @@ public class FullscreenActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+
+    //CUSTOM ADDED CODE
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            InitializeCamera(this, previewLayout);
+        } catch (Exception ex) {
+            Log.d(TAG, "Error setting camera preview: " + ex.getMessage());
+        }
+    }
+
+    private void InitializeCamera(Context context, FrameLayout previewLayout) throws Exception {
+        if (!hasHardwareCamera(context)) {
+            throw new Exception("No camera detected");
+        }
+
+        if (!hasCameraAccess()) {
+            throw new Exception("Camera access required");
+        }
+
+        mCamera = Camera.open();
+        if (null == mCamera) {
+            throw new Exception("Camera could not be accessed.");
+        }
+
+        mCamera.setDisplayOrientation(90);
+
+        CameraPreview preview = new CameraPreview(context, mCamera);
+        previewLayout.addView(preview);
+    }
+
+    private boolean hasCameraAccess() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            Snackbar.make(mContentView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_SERVICE);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_SERVICE);
+        }
+        return false;
+    }
+
+    private boolean hasHardwareCamera(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
+    private void releaseCamera() {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
     }
 }

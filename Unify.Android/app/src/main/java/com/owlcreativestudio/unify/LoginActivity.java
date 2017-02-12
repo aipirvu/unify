@@ -104,11 +104,13 @@ public class LoginActivity extends AppCompatActivity {
             Login login = new Login();
             login.setEmail(mEmail);
             login.setPassword(mPassword);
+
             try {
                 HttpHelper.Post(UrlHelper.getLoginUrl(), login);
             } catch (Exception ex) {
                 return false;
             }
+
             return true;
         }
 
