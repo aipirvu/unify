@@ -6,15 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.hardware.camera2.CameraManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,10 +20,7 @@ import android.widget.FrameLayout;
 import android.Manifest;
 
 import com.owlcreativestudio.unify.Helpers.CameraPreview;
-
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
+import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -42,8 +37,10 @@ public class FullscreenActivity extends AppCompatActivity {
 
     private String TAG = "FullscreenActivity";
     private Camera mCamera;
+    private CameraPreview mCameraPreview;
     private FrameLayout previewLayout;
     private static final int REQUEST_CAMERA_SERVICE = 0;
+    private static final int REQUEST_FINE_LOCATION = 1;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -116,6 +113,13 @@ public class FullscreenActivity extends AppCompatActivity {
 
         //Custom code
         previewLayout = (FrameLayout) findViewById(R.id.preview_layout);
+
+
+        try {
+            startGPSTracking();
+        } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
+        }
     }
 
     @Override
@@ -187,13 +191,13 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            InitializeCamera(this, previewLayout);
+            initializeCamera(this, previewLayout);
         } catch (Exception ex) {
-            Log.d(TAG, "Error setting camera preview: " + ex.getMessage());
+            Log.d(TAG, ex.getMessage());
         }
     }
 
-    private void InitializeCamera(Context context, FrameLayout previewLayout) throws Exception {
+    private void initializeCamera(Context context, FrameLayout previewLayout) throws Exception {
         if (!hasHardwareCamera(context)) {
             throw new Exception("No camera detected");
         }
@@ -209,8 +213,13 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mCamera.setDisplayOrientation(90);
 
-        CameraPreview preview = new CameraPreview(context, mCamera);
-        previewLayout.addView(preview);
+        if (null == mCameraPreview) {
+            mCameraPreview = new CameraPreview(context, mCamera);
+            previewLayout.addView(mCameraPreview);
+        } else {
+            mCameraPreview.setCamera(mCamera);
+            mCameraPreview.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean hasCameraAccess() {
@@ -244,5 +253,45 @@ public class FullscreenActivity extends AppCompatActivity {
             mCamera.release();
             mCamera = null;
         }
+        if (mCameraPreview != null) {
+            mCameraPreview.setVisibility(View.GONE);
+        }
+    }
+
+    private void startGPSTracking() throws Exception {
+        if (!hasGPSAccess()) {
+            throw new Exception("Location permission required");
+        }
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        UnifyLocationListener locationListener = new UnifyLocationListener();
+        try {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
+        } catch (SecurityException ex) {
+            throw new Exception("Location permission required", ex);
+        }
+    }
+
+    private boolean hasGPSAccess() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Snackbar.make(mContentView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+        }
+        return false;
     }
 }

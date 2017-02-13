@@ -12,6 +12,11 @@ import java.util.List;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
     private SurfaceHolder mHolder;
     private Camera mCamera;
+
+    public void setCamera(Camera mCamera) {
+        this.mCamera = mCamera;
+    }
+
     private String TAG = "CameraPreview";
     private List<Camera.Size> mSupportedPreviewSizes;
     private Camera.Size mPreviewSize;
