@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -120,6 +122,9 @@ public class FullscreenActivity extends AppCompatActivity {
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }
+
+//        Intent rotationDemoIntent = new Intent(this, RotationVectorDemoActivity.class);
+//        startActivity(rotationDemoIntent);
     }
 
     @Override
@@ -197,6 +202,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
+    //Camera related
     private void initializeCamera(Context context, FrameLayout previewLayout) throws Exception {
         if (!hasHardwareCamera(context)) {
             throw new Exception("No camera detected");
@@ -222,6 +228,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
+    //todo move at the begining of the app
     private boolean hasCameraAccess() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
@@ -244,6 +251,7 @@ public class FullscreenActivity extends AppCompatActivity {
         return false;
     }
 
+    //todo move at the begining of the app
     private boolean hasHardwareCamera(Context context) {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
@@ -258,6 +266,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
+    //GPS / LOCATION related
     private void startGPSTracking() throws Exception {
         if (!hasGPSAccess()) {
             throw new Exception("Location permission required");
@@ -273,6 +282,7 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     }
 
+    //todo move at the begining of the app
     private boolean hasGPSAccess() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return true;
