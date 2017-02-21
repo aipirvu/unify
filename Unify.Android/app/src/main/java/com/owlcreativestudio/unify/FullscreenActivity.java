@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.Build;
@@ -28,7 +30,7 @@ import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class FullscreenActivity extends AppCompatActivity {
+public class FullscreenActivity extends AppCompatActivity implements SensorEventListener {
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
@@ -36,13 +38,6 @@ public class FullscreenActivity extends AppCompatActivity {
     private boolean mVisible;
     private View mContentView;
     private View mControlsView;
-
-    private String TAG = "FullscreenActivity";
-    private Camera mCamera;
-    private CameraPreview mCameraPreview;
-    private FrameLayout previewLayout;
-    private static final int REQUEST_CAMERA_SERVICE = 0;
-    private static final int REQUEST_FINE_LOCATION = 1;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -89,6 +84,25 @@ public class FullscreenActivity extends AppCompatActivity {
         }
     };
 
+    //added variables
+    private String TAG = "FullscreenActivity";
+
+    //camera variables
+    private Camera mCamera;
+    private CameraPreview mCameraPreview;
+    private FrameLayout previewLayout;
+    private static final int REQUEST_CAMERA_SERVICE = 0;
+
+    //location variables
+    private static final int REQUEST_FINE_LOCATION = 1;
+
+    //sensor variables
+    private SensorManager mSensorManager;
+    private final float[] mAccelerometerReading = new float[3];
+    private final float[] mMagnetometerReading = new float[3];
+    private final float[] mRotationMatrix = new float[9];
+    private final float[] mOrientationAngles = new float[3];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,6 +137,9 @@ public class FullscreenActivity extends AppCompatActivity {
             Log.d(TAG, ex.getMessage());
         }
 
+        //sensor
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
 //        Intent rotationDemoIntent = new Intent(this, RotationVectorDemoActivity.class);
 //        startActivity(rotationDemoIntent);
     }
@@ -135,6 +152,88 @@ public class FullscreenActivity extends AppCompatActivity {
         // created, to briefly hint to the user that UI controls
         // are available.
         delayedHide(100);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();
+
+        // Don't receive any more updates from either sensor.
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            initializeCamera(this, previewLayout);
+        } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
+        }
+
+        // Get updates from the accelerometer and magnetometer at a constant rate.
+        // To make batch operations more efficient and reduce power consumption,
+        // provide support for delaying updates to the application.
+        //
+        // In this example, the sensor reporting delay is small enough such that
+        // the application receives an update before the system checks the sensor
+        // readings again.
+
+        Sensor accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor magentic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        mSensorManager.registerListener(this, accelerometer,
+                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, magentic,
+                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Do something here if sensor accuracy changes.
+        // You must implement this callback in your code.
+    }
+
+    // Get readings from accelerometer and magnetometer. To simplify calculations,
+    // consider storing these readings as unit vectors.
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            System.arraycopy(event.values, 0, mAccelerometerReading,
+                    0, mAccelerometerReading.length);
+        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(event.values, 0, mMagnetometerReading,
+                    0, mMagnetometerReading.length);
+        }
+
+        updateOrientationAngles();
+    }
+
+    // Compute the three orientation angles based on the most recent readings from
+    // the device's accelerometer and magnetometer.
+    public void updateOrientationAngles() {
+        // Update rotation matrix, which is needed to update orientation angles.
+        mSensorManager.getRotationMatrix(mRotationMatrix, null,
+                mAccelerometerReading, mMagnetometerReading);
+
+        // "mRotationMatrix" now has up-to-date information.
+
+        mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
+
+        // "mOrientationAngles" now has up-to-date information.
+//
+//        String rotationMatrixLog = "matrix: "
+//                + roundup(mRotationMatrix[0]) + roundup(mRotationMatrix[1]) + roundup(mRotationMatrix[2])
+//                + roundup(mRotationMatrix[3]) + roundup(mRotationMatrix[4]) + roundup(mRotationMatrix[5])
+//                + roundup(mRotationMatrix[6]) + roundup(mRotationMatrix[7]) + roundup(mRotationMatrix[8]);
+//
+//        Log.d(TAG, rotationMatrixLog);
+//
+//        String orientationLog = "orientation: " + roundup(mOrientationAngles[0]) + roundup(mOrientationAngles[1]) + roundup(mOrientationAngles[2]);
+//
+//        Log.d(TAG, orientationLog);
+
     }
 
     public void settings(View view) {
@@ -183,23 +282,6 @@ public class FullscreenActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    //CUSTOM ADDED CODE
-    @Override
-    protected void onPause() {
-        super.onPause();
-        releaseCamera();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            initializeCamera(this, previewLayout);
-        } catch (Exception ex) {
-            Log.d(TAG, ex.getMessage());
-        }
     }
 
     //Camera related
@@ -303,5 +385,11 @@ public class FullscreenActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
         }
         return false;
+    }
+
+    //utils
+
+    private String roundup(float val) {
+        return "\t|\t" + Math.round(val * 100.0) / 100.0;
     }
 }
