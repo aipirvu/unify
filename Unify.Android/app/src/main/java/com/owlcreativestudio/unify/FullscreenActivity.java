@@ -90,7 +90,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     //camera variables
     private Camera mCamera;
     private CameraPreview mCameraPreview;
-    private FrameLayout previewLayout;
+    private FrameLayout mCameraPreviewLayout;
     private static final int REQUEST_CAMERA_SERVICE = 0;
 
     //location variables
@@ -128,7 +128,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         findViewById(R.id.settings_button).setOnTouchListener(mDelayHideTouchListener);
 
         //Custom code
-        previewLayout = (FrameLayout) findViewById(R.id.preview_layout);
+        mCameraPreviewLayout = (FrameLayout) findViewById(R.id.camera_preview_layout);
 
 
         try {
@@ -167,7 +167,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     protected void onResume() {
         super.onResume();
         try {
-            initializeCamera(this, previewLayout);
+            initializeCamera(this, mCameraPreviewLayout);
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }
@@ -388,7 +388,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     }
 
     //utils
-
     private String roundup(float val) {
         return "\t|\t" + Math.round(val * 100.0) / 100.0;
     }
