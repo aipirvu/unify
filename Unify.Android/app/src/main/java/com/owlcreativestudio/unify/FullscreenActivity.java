@@ -5,12 +5,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -22,9 +25,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.Manifest;
+import android.widget.ImageButton;
 
 import com.owlcreativestudio.unify.Helpers.CameraPreview;
 import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
+
+import java.io.InputStream;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -103,6 +109,9 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     private final float[] mRotationMatrix = new float[9];
     private final float[] mOrientationAngles = new float[3];
 
+    //ar variables
+    FrameLayout arLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,6 +148,11 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
 
         //sensor
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        arLayout = (FrameLayout) findViewById(R.id.ar_content_layout);
+
+        setARElements();
+
 
 //        Intent rotationDemoIntent = new Intent(this, RotationVectorDemoActivity.class);
 //        startActivity(rotationDemoIntent);
@@ -390,5 +404,42 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     //utils
     private String roundup(float val) {
         return "\t|\t" + Math.round(val * 100.0) / 100.0;
+    }
+
+    //ar shit
+    private void setARElements() {
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(200, 200);
+        layoutParams.setMargins(200, 200, 0, 0);
+
+        ImageButton iButton = new ImageButton(this);
+        iButton.setLayoutParams(layoutParams);
+        arLayout.addView(iButton);
+
+        new DownloadImageTask(iButton).execute("https://www.linkedin.com/mpr/mpr/p/4/005/029/3f0/2d6a311.jpg");
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageButton imageButton;
+
+        public DownloadImageTask(ImageButton imageButton) {
+            this.imageButton = imageButton;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String url = urls[0];
+            Bitmap bitmap = null;
+            try {
+                InputStream in = new java.net.URL(url).openStream();
+                bitmap = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            imageButton.setImageBitmap(result);
+        }
     }
 }
