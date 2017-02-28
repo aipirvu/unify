@@ -26,6 +26,7 @@ import com.owlcreativestudio.unify.Helpers.CameraPreview;
 import com.owlcreativestudio.unify.Helpers.DownloadImageTask;
 import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
 import com.owlcreativestudio.unify.Services.CameraService;
+import com.owlcreativestudio.unify.Services.LocationService;
 
 import java.io.InputStream;
 
@@ -47,6 +48,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     private View controlsLayout;
 
     private CameraService cameraService;
+    private LocationService locationService;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -122,6 +124,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
 
 
         cameraService = new CameraService();
+        locationService = new LocationService();
 
         //test section
         setARElements();
@@ -156,7 +159,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         }
 
         try {
-            startGPSTracking();
+            locationService.startGPSTracking(this);
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }
@@ -243,17 +246,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    private void startGPSTracking() throws Exception {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        UnifyLocationListener locationListener = new UnifyLocationListener();
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
-        } catch (SecurityException ex) {
-            throw new Exception("Location permission required", ex);
-        }
     }
 
     private void startPositionSensors() {
