@@ -1,14 +1,19 @@
 package com.owlcreativestudio.unify;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -21,17 +26,37 @@ import com.owlcreativestudio.unify.Models.Login;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
+    private static final int REQUEST_CAMERA_SERVICE = 0;
+    private static final int REQUEST_FINE_LOCATION = 1;
 
     private View mProgressView;
-    private View mLoginFormView;
+    private View mLoginLayout;
+    private View mMasterLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mLoginFormView = findViewById(R.id.login_form);
+        mLoginLayout = findViewById(R.id.login_layout);
         mProgressView = findViewById(R.id.login_progress);
+        mMasterLayout = findViewById(R.id.master_layout);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!hasHardwareCamera(this)) {
+            Log.d("ERROR", "No camera detected");
+        }
+        if (!hasCameraAccess()) {
+            Log.d("ERROR", "Camera access required");
+        }
+        if (!hasGPSAccess()) {
+            Log.d("ERROR", "Location access required");
+        }
+        //todo display a warning and close the application
     }
 
     public void signIn(View view) {
@@ -62,12 +87,12 @@ public class LoginActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mLoginLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginLayout.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mLoginLayout.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -83,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginLayout.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -127,5 +152,55 @@ public class LoginActivity extends AppCompatActivity {
         protected void onCancelled() {
             showProgress(false);
         }
+    }
+
+
+    /* CHECK ACCESS TO SERVICES */
+    private boolean hasCameraAccess() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+            Snackbar.make(mMasterLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_SERVICE);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_SERVICE);
+        }
+        return false;
+    }
+
+    private boolean hasHardwareCamera(Context context) {
+        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
+    }
+
+    private boolean hasGPSAccess() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Snackbar.make(mMasterLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                        @Override
+                        @TargetApi(Build.VERSION_CODES.M)
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+                        }
+                    });
+        } else {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
+        }
+        return false;
     }
 }

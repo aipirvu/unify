@@ -1,10 +1,8 @@
 package com.owlcreativestudio.unify;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -14,8 +12,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,26 +20,32 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.Manifest;
 import android.widget.ImageButton;
 
 import com.owlcreativestudio.unify.Helpers.CameraPreview;
+import com.owlcreativestudio.unify.Helpers.DownloadImageTask;
 import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
 
 import java.io.InputStream;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class FullscreenActivity extends AppCompatActivity implements SensorEventListener {
+    FrameLayout contentLayout;
+    private boolean isVisible;
+    private Camera mCamera;
+    private CameraPreview mCameraPreview;
+    private final float[] mAccelerometerReading = new float[3];
+    private final float[] mMagnetometerReading = new float[3];
+    private final float[] mOrientationAngles = new float[3];
+    private final float[] mRotationMatrix = new float[9];
+    private final Handler mHideHandler = new Handler();
+    private FrameLayout cameraLayout;
+    private SensorManager sensorManager;
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
-    private final Handler mHideHandler = new Handler();
-    private boolean mVisible;
-    private View mContentView;
-    private View mControlsView;
+    private static final String TAG = "FullscreenActivity";
+    private View masterLayout;
+    private View controlsLayout;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -54,7 +56,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+            masterLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -70,7 +72,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+            controlsLayout.setVisibility(View.VISIBLE);
         }
     };
     private final Runnable mHideRunnable = new Runnable() {
@@ -90,27 +92,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         }
     };
 
-    //added variables
-    private String TAG = "FullscreenActivity";
-
-    //camera variables
-    private Camera mCamera;
-    private CameraPreview mCameraPreview;
-    private FrameLayout mCameraPreviewLayout;
-    private static final int REQUEST_CAMERA_SERVICE = 0;
-
-    //location variables
-    private static final int REQUEST_FINE_LOCATION = 1;
-
-    //sensor variables
-    private SensorManager mSensorManager;
-    private final float[] mAccelerometerReading = new float[3];
-    private final float[] mMagnetometerReading = new float[3];
-    private final float[] mRotationMatrix = new float[9];
-    private final float[] mOrientationAngles = new float[3];
-
-    //ar variables
-    FrameLayout arLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,44 +99,29 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
 
         setContentView(R.layout.activity_fullscreen);
 
-        mVisible = true;
-        mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.master_layout);
+        //layouts
+        masterLayout = findViewById(R.id.master_layout);
+        cameraLayout = (FrameLayout) findViewById(R.id.camera_layout);
+        contentLayout = (FrameLayout) findViewById(R.id.content_layout);
+        controlsLayout = findViewById(R.id.controls_layout);
 
+        isVisible = true;
 
-        // Set up the user interaction to manually show or hide the system UI.
-        mContentView.setOnClickListener(new View.OnClickListener() {
+        //sensors
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        masterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggle();
             }
         });
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
         findViewById(R.id.settings_button).setOnTouchListener(mDelayHideTouchListener);
 
-        //Custom code
-        mCameraPreviewLayout = (FrameLayout) findViewById(R.id.camera_preview_layout);
 
-
-        try {
-            startGPSTracking();
-        } catch (Exception ex) {
-            Log.d(TAG, ex.getMessage());
-        }
-
-        //sensor
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        arLayout = (FrameLayout) findViewById(R.id.ar_content_layout);
-
+        //test section
         setARElements();
-
-
-//        Intent rotationDemoIntent = new Intent(this, RotationVectorDemoActivity.class);
-//        startActivity(rotationDemoIntent);
     }
 
     @Override
@@ -174,33 +140,25 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         releaseCamera();
 
         // Don't receive any more updates from either sensor.
-        mSensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         try {
-            initializeCamera(this, mCameraPreviewLayout);
+            initializeCamera(this, cameraLayout);
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }
 
-        // Get updates from the accelerometer and magnetometer at a constant rate.
-        // To make batch operations more efficient and reduce power consumption,
-        // provide support for delaying updates to the application.
-        //
-        // In this example, the sensor reporting delay is small enough such that
-        // the application receives an update before the system checks the sensor
-        // readings again.
+        try {
+            startGPSTracking();
+        } catch (Exception ex) {
+            Log.d(TAG, ex.getMessage());
+        }
 
-        Sensor accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Sensor magentic = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        mSensorManager.registerListener(this, accelerometer,
-                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magentic,
-                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        startPositionSensors();
     }
 
     @Override
@@ -209,8 +167,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         // You must implement this callback in your code.
     }
 
-    // Get readings from accelerometer and magnetometer. To simplify calculations,
-    // consider storing these readings as unit vectors.
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -224,18 +180,10 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         updateOrientationAngles();
     }
 
-    // Compute the three orientation angles based on the most recent readings from
-    // the device's accelerometer and magnetometer.
     public void updateOrientationAngles() {
-        // Update rotation matrix, which is needed to update orientation angles.
-        mSensorManager.getRotationMatrix(mRotationMatrix, null,
-                mAccelerometerReading, mMagnetometerReading);
+        sensorManager.getRotationMatrix(mRotationMatrix, null, mAccelerometerReading, mMagnetometerReading);
+        sensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
-        // "mRotationMatrix" now has up-to-date information.
-
-        mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
-
-        // "mOrientationAngles" now has up-to-date information.
 //
 //        String rotationMatrixLog = "matrix: "
 //                + roundup(mRotationMatrix[0]) + roundup(mRotationMatrix[1]) + roundup(mRotationMatrix[2])
@@ -256,7 +204,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     }
 
     private void toggle() {
-        if (mVisible) {
+        if (isVisible) {
             hide();
         } else {
             show();
@@ -269,8 +217,8 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
-        mVisible = false;
+        controlsLayout.setVisibility(View.GONE);
+        isVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
@@ -280,34 +228,21 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        masterLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        mVisible = true;
+        isVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
         mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY);
     }
 
-    /**
-     * Schedules a call to hide() in [delay] milliseconds, canceling any
-     * previously scheduled calls.
-     */
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    //Camera related
     private void initializeCamera(Context context, FrameLayout previewLayout) throws Exception {
-        if (!hasHardwareCamera(context)) {
-            throw new Exception("No camera detected");
-        }
-
-        if (!hasCameraAccess()) {
-            throw new Exception("Camera access required");
-        }
-
         mCamera = Camera.open();
         if (null == mCamera) {
             throw new Exception("Camera could not be accessed.");
@@ -324,34 +259,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         }
     }
 
-    //todo move at the begining of the app
-    private boolean hasCameraAccess() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-            Snackbar.make(mContentView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_SERVICE);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_SERVICE);
-        }
-        return false;
-    }
-
-    //todo move at the begining of the app
-    private boolean hasHardwareCamera(Context context) {
-        return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
-    }
-
     private void releaseCamera() {
         if (mCamera != null) {
             mCamera.release();
@@ -362,12 +269,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         }
     }
 
-    //GPS / LOCATION related
     private void startGPSTracking() throws Exception {
-        if (!hasGPSAccess()) {
-            throw new Exception("Location permission required");
-        }
-
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         UnifyLocationListener locationListener = new UnifyLocationListener();
         try {
@@ -378,27 +280,14 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         }
     }
 
-    //todo move at the begining of the app
-    private boolean hasGPSAccess() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Snackbar.make(mContentView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
-        }
-        return false;
+    private void startPositionSensors() {
+        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor magentic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        sensorManager.registerListener(this, accelerometer,
+                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(this, magentic,
+                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
     }
 
     //utils
@@ -406,40 +295,14 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         return "\t|\t" + Math.round(val * 100.0) / 100.0;
     }
 
-    //ar shit
     private void setARElements() {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(200, 200);
         layoutParams.setMargins(200, 200, 0, 0);
 
         ImageButton iButton = new ImageButton(this);
         iButton.setLayoutParams(layoutParams);
-        arLayout.addView(iButton);
+        contentLayout.addView(iButton);
 
         new DownloadImageTask(iButton).execute("https://www.linkedin.com/mpr/mpr/p/4/005/029/3f0/2d6a311.jpg");
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageButton imageButton;
-
-        public DownloadImageTask(ImageButton imageButton) {
-            this.imageButton = imageButton;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String url = urls[0];
-            Bitmap bitmap = null;
-            try {
-                InputStream in = new java.net.URL(url).openStream();
-                bitmap = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return bitmap;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            imageButton.setImageBitmap(result);
-        }
     }
 }
