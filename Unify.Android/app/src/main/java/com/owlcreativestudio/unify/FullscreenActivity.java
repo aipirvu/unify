@@ -1,17 +1,7 @@
 package com.owlcreativestudio.unify;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,24 +12,17 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
-import com.owlcreativestudio.unify.Helpers.CameraPreview;
 import com.owlcreativestudio.unify.Helpers.DownloadImageTask;
-import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
 import com.owlcreativestudio.unify.Services.CameraService;
 import com.owlcreativestudio.unify.Services.LocationService;
+import com.owlcreativestudio.unify.Services.PositionService;
 
-import java.io.InputStream;
-
-public class FullscreenActivity extends AppCompatActivity implements SensorEventListener {
+public class FullscreenActivity extends AppCompatActivity {
     FrameLayout contentLayout;
     private boolean isVisible;
-    private final float[] mAccelerometerReading = new float[3];
-    private final float[] mMagnetometerReading = new float[3];
-    private final float[] mOrientationAngles = new float[3];
-    private final float[] mRotationMatrix = new float[9];
+
     private final Handler mHideHandler = new Handler();
     private FrameLayout cameraLayout;
-    private SensorManager sensorManager;
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
@@ -49,6 +32,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
 
     private CameraService cameraService;
     private LocationService locationService;
+    private PositionService positionService;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -110,9 +94,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
 
         isVisible = true;
 
-        //sensors
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         masterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -125,6 +106,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
 
         cameraService = new CameraService();
         locationService = new LocationService();
+        positionService = new PositionService(this);
 
         //test section
         setARElements();
@@ -144,9 +126,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     protected void onPause() {
         super.onPause();
         cameraService.releaseCamera();
-
-        // Don't receive any more updates from either sensor.
-        sensorManager.unregisterListener(this);
+        positionService.stopListening();
     }
 
     @Override
@@ -164,44 +144,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
             Log.d(TAG, ex.getMessage());
         }
 
-        startPositionSensors();
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Do something here if sensor accuracy changes.
-        // You must implement this callback in your code.
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            System.arraycopy(event.values, 0, mAccelerometerReading,
-                    0, mAccelerometerReading.length);
-        } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            System.arraycopy(event.values, 0, mMagnetometerReading,
-                    0, mMagnetometerReading.length);
-        }
-
-        updateOrientationAngles();
-    }
-
-    public void updateOrientationAngles() {
-        sensorManager.getRotationMatrix(mRotationMatrix, null, mAccelerometerReading, mMagnetometerReading);
-        sensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
-
-//
-//        String rotationMatrixLog = "matrix: "
-//                + roundup(mRotationMatrix[0]) + roundup(mRotationMatrix[1]) + roundup(mRotationMatrix[2])
-//                + roundup(mRotationMatrix[3]) + roundup(mRotationMatrix[4]) + roundup(mRotationMatrix[5])
-//                + roundup(mRotationMatrix[6]) + roundup(mRotationMatrix[7]) + roundup(mRotationMatrix[8]);
-//
-//        Log.d(TAG, rotationMatrixLog);
-//
-//        String orientationLog = "orientation: " + roundup(mOrientationAngles[0]) + roundup(mOrientationAngles[1]) + roundup(mOrientationAngles[2]);
-//
-//        Log.d(TAG, orientationLog);
-
+        positionService.startPositionSensors();
     }
 
     public void settings(View view) {
@@ -246,21 +189,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    private void startPositionSensors() {
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Sensor magentic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-        sensorManager.registerListener(this, accelerometer,
-                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        sensorManager.registerListener(this, magentic,
-                SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-    }
-
-    //utils
-    private String roundup(float val) {
-        return "\t|\t" + Math.round(val * 100.0) / 100.0;
     }
 
     private void setARElements() {

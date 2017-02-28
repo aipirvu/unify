@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 public class UnifyLocationListener implements LocationListener {
-    private String TAG = "UnifyLocationListener";
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v(TAG, "IN ON LOCATION CHANGE, lat=" + location.getLatitude() + ", lon=" + location.getLongitude());
+        Log.v("LOCATION LISTENER", "IN ON LOCATION CHANGE, lat=" + location.getLatitude() + ", lon=" + location.getLongitude());
         //todo send this to the server
         //todo update profiles based on this
     }
