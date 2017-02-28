@@ -25,14 +25,13 @@ import android.widget.ImageButton;
 import com.owlcreativestudio.unify.Helpers.CameraPreview;
 import com.owlcreativestudio.unify.Helpers.DownloadImageTask;
 import com.owlcreativestudio.unify.Helpers.UnifyLocationListener;
+import com.owlcreativestudio.unify.Services.CameraService;
 
 import java.io.InputStream;
 
 public class FullscreenActivity extends AppCompatActivity implements SensorEventListener {
     FrameLayout contentLayout;
     private boolean isVisible;
-    private Camera mCamera;
-    private CameraPreview mCameraPreview;
     private final float[] mAccelerometerReading = new float[3];
     private final float[] mMagnetometerReading = new float[3];
     private final float[] mOrientationAngles = new float[3];
@@ -46,6 +45,8 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     private static final String TAG = "FullscreenActivity";
     private View masterLayout;
     private View controlsLayout;
+
+    private CameraService cameraService;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -120,6 +121,8 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
         findViewById(R.id.settings_button).setOnTouchListener(mDelayHideTouchListener);
 
 
+        cameraService = new CameraService();
+
         //test section
         setARElements();
     }
@@ -137,7 +140,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     @Override
     protected void onPause() {
         super.onPause();
-        releaseCamera();
+        cameraService.releaseCamera();
 
         // Don't receive any more updates from either sensor.
         sensorManager.unregisterListener(this);
@@ -147,7 +150,7 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     protected void onResume() {
         super.onResume();
         try {
-            initializeCamera(this, cameraLayout);
+            cameraService.initializeCamera(this, cameraLayout);
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }
@@ -240,33 +243,6 @@ public class FullscreenActivity extends AppCompatActivity implements SensorEvent
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    private void initializeCamera(Context context, FrameLayout previewLayout) throws Exception {
-        mCamera = Camera.open();
-        if (null == mCamera) {
-            throw new Exception("Camera could not be accessed.");
-        }
-
-        mCamera.setDisplayOrientation(90);
-
-        if (null == mCameraPreview) {
-            mCameraPreview = new CameraPreview(context, mCamera);
-            previewLayout.addView(mCameraPreview);
-        } else {
-            mCameraPreview.setCamera(mCamera);
-            mCameraPreview.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void releaseCamera() {
-        if (mCamera != null) {
-            mCamera.release();
-            mCamera = null;
-        }
-        if (mCameraPreview != null) {
-            mCameraPreview.setVisibility(View.GONE);
-        }
     }
 
     private void startGPSTracking() throws Exception {
