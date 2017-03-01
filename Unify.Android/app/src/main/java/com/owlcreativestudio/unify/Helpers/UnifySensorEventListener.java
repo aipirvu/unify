@@ -4,6 +4,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.icu.text.DecimalFormat;
+import android.icu.text.NumberFormat;
+import android.util.Log;
 //import android.util.Log;
 
 public class UnifySensorEventListener implements SensorEventListener {
@@ -11,6 +14,7 @@ public class UnifySensorEventListener implements SensorEventListener {
     private final float[] mMagnetometerReading = new float[3];
     private final float[] mOrientationAngles = new float[3];
     private final float[] mRotationMatrix = new float[9];
+    private double radiansXY = 0;
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -42,12 +46,21 @@ public class UnifySensorEventListener implements SensorEventListener {
 
 //        Log.d(TAG, rotationMatrixLog);
 
-//        String orientationLog = "orientation: " + roundup(mOrientationAngles[0]) + roundup(mOrientationAngles[1]) + roundup(mOrientationAngles[2]);
+//        String orientationLog = "" + roundup(mOrientationAngles[0]) + roundup(mOrientationAngles[1]) + roundup(mOrientationAngles[2]);
+//        Log.d("ORIENTATION", orientationLog);
 
-//        Log.d(TAG, orientationLog);
+        if (roundNumber(mOrientationAngles[0]) != radiansXY) {
+            radiansXY = roundNumber(mOrientationAngles[0]);
+            String xyString = "" + radiansXY;
+            Log.d("XY Radians", xyString);
+        }
     }
 
-//    private String roundup(float val) {
-//        return "\t|\t" + Math.round(val * 100.0) / 100.0;
-//    }
+    private String roundup(float val) {
+        return "\t|\t" + Math.round(val * 100.0) / 100.0;
+    }
+
+    private double roundNumber(float val) {
+        return Math.round(val * 10.0) / 10.0;
+    }
 }

@@ -192,13 +192,13 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void setARElements() {
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(200, 200);
-        layoutParams.setMargins(200, 200, 0, 0);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(400, 400);
+        layoutParams.setMargins(400, 400, 0, 0);
 
         ImageButton iButton = new ImageButton(this);
         iButton.setLayoutParams(layoutParams);
         contentLayout.addView(iButton);
 
-        new DownloadImageTask(iButton).execute("https://www.linkedin.com/mpr/mpr/p/4/005/029/3f0/2d6a311.jpg");
+        new DownloadImageTask(iButton).execute("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
     }
 }
