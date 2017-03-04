@@ -1,10 +1,9 @@
-package com.owlcreativestudio.unify.Models;
+package com.owlcreativestudio.unify.models;
 
 public class AdjacentPerson {
     private String id;
     private String name;
-    private double latitude;
-    private double longitude;
+    private UnifyLocation location;
     private String imageUrl;
 
     public String getId() {
@@ -23,20 +22,12 @@ public class AdjacentPerson {
         this.name = name;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public UnifyLocation getLocation() {
+        return location;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setLocation(UnifyLocation location) {
+        this.location = location;
     }
 
     public String getImageUrl() {

@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify.Helpers;
+package com.owlcreativestudio.unify.helpers;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

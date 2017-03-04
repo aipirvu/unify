@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify.Helpers;
+package com.owlcreativestudio.unify.helpers;
 
 /**
  * Created by aipir on 06-Feb-17.

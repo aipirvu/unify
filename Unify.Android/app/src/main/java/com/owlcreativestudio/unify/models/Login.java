@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify.Models;
+package com.owlcreativestudio.unify.models;
 
 /**
  * Created by aipir on 07-Feb-17.

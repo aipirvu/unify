@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify.Helpers;
+package com.owlcreativestudio.unify.helpers;
 
 import android.content.Context;
 import android.hardware.Camera;

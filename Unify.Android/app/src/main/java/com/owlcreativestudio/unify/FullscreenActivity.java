@@ -12,10 +12,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
-import com.owlcreativestudio.unify.Helpers.DownloadImageTask;
-import com.owlcreativestudio.unify.Services.CameraService;
-import com.owlcreativestudio.unify.Services.LocationService;
-import com.owlcreativestudio.unify.Services.PositionService;
+import com.owlcreativestudio.unify.helpers.DownloadImageTask;
+import com.owlcreativestudio.unify.services.ARService;
+import com.owlcreativestudio.unify.services.CameraService;
+import com.owlcreativestudio.unify.services.LocationService;
+import com.owlcreativestudio.unify.services.PositionService;
 
 public class FullscreenActivity extends AppCompatActivity {
     FrameLayout contentLayout;
@@ -30,6 +31,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private View masterLayout;
     private View controlsLayout;
 
+    private ARService arService;
     private CameraService cameraService;
     private LocationService locationService;
     private PositionService positionService;
@@ -86,7 +88,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_fullscreen);
 
-        //layouts
+        //set layouts
         masterLayout = findViewById(R.id.master_layout);
         cameraLayout = (FrameLayout) findViewById(R.id.camera_layout);
         contentLayout = (FrameLayout) findViewById(R.id.content_layout);
@@ -94,6 +96,14 @@ public class FullscreenActivity extends AppCompatActivity {
 
         isVisible = true;
 
+        //set services
+        arService = new ARService(this, contentLayout, 0, 10);
+        cameraService = new CameraService(this, cameraLayout);
+        locationService = new LocationService(this, arService);
+        positionService = new PositionService(this, arService);
+
+
+        //set behaviour
         masterLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,11 +112,6 @@ public class FullscreenActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.settings_button).setOnTouchListener(mDelayHideTouchListener);
-
-
-        cameraService = new CameraService();
-        locationService = new LocationService();
-        positionService = new PositionService(this);
 
         //test section
         setARElements();
@@ -133,13 +138,13 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try {
-            cameraService.initializeCamera(this, cameraLayout);
+            cameraService.initializeCamera();
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }
 
         try {
-            locationService.startGPSTracking(this);
+            locationService.startGPSTracking();
         } catch (Exception ex) {
             Log.d(TAG, ex.getMessage());
         }

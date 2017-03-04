@@ -17,9 +17,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.owlcreativestudio.unify.Helpers.HttpHelper;
-import com.owlcreativestudio.unify.Helpers.UrlHelper;
-import com.owlcreativestudio.unify.Models.Login;
+import com.owlcreativestudio.unify.helpers.HttpHelper;
+import com.owlcreativestudio.unify.helpers.UrlHelper;
+import com.owlcreativestudio.unify.models.Login;
 
 
 /**
