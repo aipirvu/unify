@@ -10,13 +10,16 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 
-import com.owlcreativestudio.unify.helpers.DownloadImageTask;
+import com.owlcreativestudio.unify.models.AdjacentPerson;
+import com.owlcreativestudio.unify.models.UnifyLocation;
 import com.owlcreativestudio.unify.services.ARService;
 import com.owlcreativestudio.unify.services.CameraService;
 import com.owlcreativestudio.unify.services.LocationService;
 import com.owlcreativestudio.unify.services.PositionService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FullscreenActivity extends AppCompatActivity {
     FrameLayout contentLayout;
@@ -97,8 +100,8 @@ public class FullscreenActivity extends AppCompatActivity {
         isVisible = true;
 
         //set services
-        arService = new ARService(this, contentLayout, 0, 10);
-        cameraService = new CameraService(this, cameraLayout);
+        arService = new ARService(this, contentLayout, 10);
+        cameraService = new CameraService(this, cameraLayout, arService);
         locationService = new LocationService(this, arService);
         positionService = new PositionService(this, arService);
 
@@ -113,8 +116,8 @@ public class FullscreenActivity extends AppCompatActivity {
 
         findViewById(R.id.settings_button).setOnTouchListener(mDelayHideTouchListener);
 
-        //test section
-        setARElements();
+        //set fake data
+        setFakeData();
     }
 
     @Override
@@ -196,14 +199,21 @@ public class FullscreenActivity extends AppCompatActivity {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
-    private void setARElements() {
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(400, 400);
-        layoutParams.setMargins(400, 400, 0, 0);
+    private void setFakeData() {
+        UnifyLocation location = new UnifyLocation();
+        location.setElevation(0);
+        location.setLatitude(44.4317468);
+        location.setLatitude(26.0188011);
 
-        ImageButton iButton = new ImageButton(this);
-        iButton.setLayoutParams(layoutParams);
-        contentLayout.addView(iButton);
+        AdjacentPerson adjacentPerson = new AdjacentPerson();
+        adjacentPerson.setName("Qutory");
+        adjacentPerson.setImageUrl("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
+        adjacentPerson.setId("" + Math.random());
+        adjacentPerson.setLocation(location);
 
-        new DownloadImageTask(iButton).execute("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
+        List<AdjacentPerson> adjacentPeople = new ArrayList<>();
+        adjacentPeople.add(adjacentPerson);
+
+        arService.setAdjacentPeople(adjacentPeople);
     }
 }

@@ -4,9 +4,14 @@ package com.owlcreativestudio.unify.models;
 public class ARState {
     private int previewHeight;
     private int previewWidth;
+    private double cameraAngle;
     private int iconSize;
     private double xyRadians;
     private UnifyLocation location;
+
+    public ARState() {
+        location = new UnifyLocation();
+    }
 
     public boolean equals(ARState target) {
         return previewHeight != target.getPreviewHeight()
@@ -49,5 +54,13 @@ public class ARState {
 
     public void setXyRadians(double xyRadians) {
         this.xyRadians = xyRadians;
+    }
+
+    public double getCameraAngle() {
+        return cameraAngle;
+    }
+
+    public void setCameraAngle(double cameraAngle) {
+        this.cameraAngle = cameraAngle;
     }
 }
