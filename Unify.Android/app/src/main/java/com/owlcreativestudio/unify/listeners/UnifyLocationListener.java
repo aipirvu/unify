@@ -25,6 +25,10 @@ public class UnifyLocationListener implements LocationListener {
         unifyLocation.setLongitude(location.getLongitude());
         unifyLocation.setElevation(location.getAltitude());
 
+//        unifyLocation.setLatitude(0.1);
+//        unifyLocation.setLongitude(0.1);
+//        unifyLocation.setElevation(0.1);
+
         ARState arState = arStateGetSetter.getArState();
         arState.setLocation(unifyLocation);
 

@@ -65,8 +65,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             camera.startPreview();
 
             ARState arState = arStateGetSetter.getArState();
-            arState.setPreviewHeight(previewSize.height);
-            arState.setPreviewWidth(previewSize.width);
+            //the camera is rotated at 90 degrees so this should be switch for the calculations
+            arState.setPreviewHeight(previewSize.width);
+            arState.setPreviewWidth(previewSize.height);
             arStateGetSetter.setArState(arState);
         }
 

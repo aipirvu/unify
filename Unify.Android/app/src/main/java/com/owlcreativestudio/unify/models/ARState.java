@@ -5,7 +5,6 @@ public class ARState {
     private int previewHeight;
     private int previewWidth;
     private double cameraAngle;
-    private int iconSize;
     private double xyRadians;
     private UnifyLocation location;
 
@@ -14,10 +13,21 @@ public class ARState {
     }
 
     public boolean equals(ARState target) {
-        return previewHeight != target.getPreviewHeight()
-                && previewWidth != target.getPreviewHeight()
+        return previewHeight == target.getPreviewHeight()
+                && previewWidth == target.getPreviewWidth()
                 && location.equals(target.getLocation())
-                && xyRadians != target.getXyRadians();
+                && xyRadians == target.getXyRadians()
+                && cameraAngle == target.getCameraAngle();
+    }
+
+    public ARState clone() {
+        ARState clone = new ARState();
+        clone.setPreviewHeight(previewHeight);
+        clone.setPreviewWidth(previewWidth);
+        clone.setCameraAngle(cameraAngle);
+        clone.setXyRadians(xyRadians);
+        clone.setLocation(location.clone());
+        return clone;
     }
 
     public int getPreviewHeight() {

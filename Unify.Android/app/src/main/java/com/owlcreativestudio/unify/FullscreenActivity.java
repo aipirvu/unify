@@ -100,7 +100,7 @@ public class FullscreenActivity extends AppCompatActivity {
         isVisible = true;
 
         //set services
-        arService = new ARService(this, contentLayout, 10);
+        arService = new ARService(this, contentLayout, 50);
         cameraService = new CameraService(this, cameraLayout, arService);
         locationService = new LocationService(this, arService);
         positionService = new PositionService(this, arService);
@@ -200,10 +200,22 @@ public class FullscreenActivity extends AppCompatActivity {
     }
 
     private void setFakeData() {
+
+
+        List<AdjacentPerson> adjacentPeople = new ArrayList<>();
+        adjacentPeople.add(getPerson1());
+        adjacentPeople.add(getPerson2());
+
+        arService.setAdjacentPeople(adjacentPeople);
+    }
+
+    private AdjacentPerson getPerson1(){
         UnifyLocation location = new UnifyLocation();
         location.setElevation(0);
         location.setLatitude(44.4317468);
-        location.setLatitude(26.0188011);
+        location.setLongitude(26.0188011);
+//        location.setLatitude(45);
+//        location.setLongitude(45);
 
         AdjacentPerson adjacentPerson = new AdjacentPerson();
         adjacentPerson.setName("Qutory");
@@ -211,9 +223,23 @@ public class FullscreenActivity extends AppCompatActivity {
         adjacentPerson.setId("" + Math.random());
         adjacentPerson.setLocation(location);
 
-        List<AdjacentPerson> adjacentPeople = new ArrayList<>();
-        adjacentPeople.add(adjacentPerson);
+        return adjacentPerson;
+    }
 
-        arService.setAdjacentPeople(adjacentPeople);
+    private AdjacentPerson getPerson2(){
+        UnifyLocation location = new UnifyLocation();
+        location.setElevation(0);
+        location.setLatitude(44.431785);
+        location.setLongitude(26.01896);
+//        location.setLatitude(-45);
+//        location.setLongitude(-45);
+
+        AdjacentPerson adjacentPerson = new AdjacentPerson();
+        adjacentPerson.setName("ADL");
+        adjacentPerson.setImageUrl("https://scontent.fotp3-2.fna.fbcdn.net/v/t1.0-1/p160x160/14463131_1174090729337640_5968235094959303848_n.jpg?oh=6d524d8f0a743f059a46d4b0b59766a5&oe=5966C6A6");
+        adjacentPerson.setId("" + Math.random());
+        adjacentPerson.setLocation(location);
+
+        return adjacentPerson;
     }
 }

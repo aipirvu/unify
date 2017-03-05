@@ -21,6 +21,7 @@ import java.util.List;
 
 public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private final double MAXIMUM_DISTANCE;
+    private final double MINIMUM_DISTANCE = 10;
     private final FrameLayout LAYOUT;
     private final Context CONTEXT;
 
@@ -29,6 +30,7 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private ARState arState;
 
     private TextView logView;
+    private double previousProcessedXY;
 
     public ARService(Context context, FrameLayout layout, double maximumDistance) {
         CONTEXT = context;
@@ -39,21 +41,29 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     public ARState getArState() {
-        return arState;
+        return arState.clone();
     }
 
     public void setArState(ARState arState) {
         arState.setXyRadians(roundAngle(arState.getXyRadians()));
         if (!this.arState.equals(arState)) {
-            this.arState = arState;
-            processScene();
+            this.arState = arState.clone();
+            if (isPassingXYThreshold(arState.getXyRadians())) {
+                processScene();
+            }
         }
     }
 
     public void setAdjacentPeople(List<AdjacentPerson> adjacentPeople) {
         HashMap<String, ImageView> adjacentObjects = new HashMap<>();
+
+        LAYOUT.removeAllViews();
+
         for (AdjacentPerson adjacentPerson : adjacentPeople) {
-            adjacentObjects.put(adjacentPerson.getId(), getAdjacentObject(adjacentPerson));
+            ImageView adjacentObject = getAdjacentObject(adjacentPerson);
+            adjacentObjects.put(adjacentPerson.getId(), adjacentObject);
+            LAYOUT.addView(adjacentObject);
+            adjacentObject.setVisibility(View.GONE);
         }
 
         this.adjacentPeople = adjacentPeople;
@@ -103,6 +113,11 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private void processScene() {
+        if (arState.getLocation().getLatitude() == 0 && arState.getLocation().getLongitude() == 0) {
+            log("Waiting for location...");
+            return;
+        }
+
         List<ImageView> viewsToShow = new ArrayList<>();
         List<ImageView> viewsToHide = new ArrayList<>();
 
@@ -110,18 +125,30 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
             ImageView imageView = adjacentObjects.get(adjacentPerson.getId());
 
             double position = getPosition(arState.getLocation(), adjacentPerson.getLocation());
-            if (!isInView(position)) {
+            boolean isInView = isInView(position);
+            if (!isInView) {
                 viewsToHide.add(imageView);
                 continue;
             }
             viewsToShow.add(imageView);
 
             double distance = getDistance(arState.getLocation(), adjacentPerson.getLocation());
-            int iconSize = (int) (distance / MAXIMUM_DISTANCE) * arState.getIconSize();
+
+            if (distance > MAXIMUM_DISTANCE) {
+                distance = MAXIMUM_DISTANCE;
+            }
+            if (distance < MINIMUM_DISTANCE) {
+                distance = MINIMUM_DISTANCE;
+            }
+
+            double distanceModifier = 1 / distance * 10;
+
+            int iconSize = (int) (arState.getIconSize() * distanceModifier);
             int leftMargin = getLeftMargin(position, iconSize);
+            int topMargin = getTopMargin(iconSize, distanceModifier);
 
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(iconSize, iconSize);
-            layoutParams.setMargins(leftMargin, 400, 0, 0);
+            layoutParams.setMargins(leftMargin, topMargin, 0, 0);
             imageView.setLayoutParams(layoutParams);
         }
 
@@ -133,6 +160,15 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         }
 
         log();
+    }
+
+    private boolean isPassingXYThreshold(double current) {
+        final double ANGLE_THRESHOLD = 0.1;
+        boolean isPassing = Math.abs(previousProcessedXY - current) > ANGLE_THRESHOLD;
+        if (isPassing) {
+            previousProcessedXY = current;
+        }
+        return isPassing;
     }
 
     private boolean isInView(double position) {
@@ -150,11 +186,24 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         return (int) (arState.getPreviewWidth() * leftRelativePosition - iconSize / 2);
     }
 
-    private double roundAngle(double val) {
-        return Math.round(val * 10.0) / 10.0;
+    private int getTopMargin(int iconSize, double distanceModifier) {
+        int previewHeight = arState.getPreviewHeight();
+        int mandatoryMargin = previewHeight / 10;
+        int potentiallyAddedMargin = previewHeight - (previewHeight / 5) - iconSize;
+
+        return (int) (mandatoryMargin + potentiallyAddedMargin * distanceModifier / 2);
     }
 
+    private double roundAngle(double val) {
+        return Math.round(val * 100.0) / 100.0;
+    }
+
+
     private void log() {
+        log(getLogMessage());
+    }
+
+    private void log(String message) {
         if (null == logView) {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -165,7 +214,8 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
 
             LAYOUT.addView(logView);
         }
-        logView.setText(getLogMessage());
+
+        logView.setText(message);
     }
 
     private String getLogMessage() {

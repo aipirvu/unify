@@ -9,6 +9,14 @@ public class UnifyLocation {
         return latitude == target.getLatitude() && longitude == target.getLongitude() && elevation == target.getElevation();
     }
 
+    public UnifyLocation clone() {
+        UnifyLocation clone = new UnifyLocation();
+        clone.setLatitude(latitude);
+        clone.setLongitude(longitude);
+        clone.setElevation(elevation);
+        return clone;
+    }
+
     public double getLatitude() {
         return latitude;
     }
