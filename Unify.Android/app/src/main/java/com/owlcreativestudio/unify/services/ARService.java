@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,12 +22,11 @@ import java.util.List;
 
 public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private final double MAXIMUM_DISTANCE;
-    private final double MINIMUM_DISTANCE = 10;
     private final FrameLayout LAYOUT;
     private final Context CONTEXT;
 
     private List<AdjacentPerson> adjacentPeople = new ArrayList<>();
-    private HashMap<String, ImageView> adjacentObjects = new HashMap<>();
+    private HashMap<String, FrameLayout> adjacentObjects = new HashMap<>();
     private ARState arState;
 
     private TextView logView;
@@ -55,12 +55,12 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     public void setAdjacentPeople(List<AdjacentPerson> adjacentPeople) {
-        HashMap<String, ImageView> adjacentObjects = new HashMap<>();
+        HashMap<String, FrameLayout> adjacentObjects = new HashMap<>();
 
         LAYOUT.removeAllViews();
 
         for (AdjacentPerson adjacentPerson : adjacentPeople) {
-            ImageView adjacentObject = getAdjacentObject(adjacentPerson);
+            FrameLayout adjacentObject = getAdjacentObject(adjacentPerson);
             adjacentObjects.put(adjacentPerson.getId(), adjacentObject);
             LAYOUT.addView(adjacentObject);
             adjacentObject.setVisibility(View.GONE);
@@ -70,13 +70,29 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         this.adjacentObjects = adjacentObjects;
     }
 
-    private ImageView getAdjacentObject(AdjacentPerson adjacentPerson) {
-        ImageView imageView = new ImageView(CONTEXT);
+    private FrameLayout getAdjacentObject(AdjacentPerson adjacentPerson) {
+        FrameLayout.LayoutParams pictureParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        ImageView pictureView = new ImageView(CONTEXT);
+        pictureView.setScaleType(ImageView.ScaleType.FIT_XY);
+        pictureView.setLayoutParams(pictureParams);
         if (null != adjacentPerson.getImageUrl()) {
-            new DownloadImageTask(imageView).execute(adjacentPerson.getImageUrl());
+            new DownloadImageTask(pictureView).execute(adjacentPerson.getImageUrl());
         }
 
-        return imageView;
+        FrameLayout.LayoutParams textParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        TextView nameView = new TextView(CONTEXT);
+        nameView.setPadding(10, 10, 10, 10);
+        nameView.setText(adjacentPerson.getName());
+        nameView.setBackgroundColor(Color.BLACK);
+        nameView.setTextColor(Color.WHITE);
+        nameView.setLayoutParams(textParams);
+
+        FrameLayout personLayout = new FrameLayout(CONTEXT);
+        personLayout.setBackgroundColor(Color.GRAY);
+        personLayout.addView(pictureView);
+        personLayout.addView(nameView);
+
+        return personLayout;
     }
 
     //Distance in meters
@@ -113,24 +129,26 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private void processScene() {
+        final double MINIMUM_DISTANCE = 10;
+
         if (arState.getLocation().getLatitude() == 0 && arState.getLocation().getLongitude() == 0) {
             log("Waiting for location...");
             return;
         }
 
-        List<ImageView> viewsToShow = new ArrayList<>();
-        List<ImageView> viewsToHide = new ArrayList<>();
+        List<FrameLayout> viewsToShow = new ArrayList<>();
+        List<FrameLayout> viewsToHide = new ArrayList<>();
 
         for (AdjacentPerson adjacentPerson : adjacentPeople) {
-            ImageView imageView = adjacentObjects.get(adjacentPerson.getId());
+            FrameLayout personLayout = adjacentObjects.get(adjacentPerson.getId());
 
             double position = getPosition(arState.getLocation(), adjacentPerson.getLocation());
             boolean isInView = isInView(position);
             if (!isInView) {
-                viewsToHide.add(imageView);
+                viewsToHide.add(personLayout);
                 continue;
             }
-            viewsToShow.add(imageView);
+            viewsToShow.add(personLayout);
 
             double distance = getDistance(arState.getLocation(), adjacentPerson.getLocation());
 
@@ -149,14 +167,14 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
 
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(iconSize, iconSize);
             layoutParams.setMargins(leftMargin, topMargin, 0, 0);
-            imageView.setLayoutParams(layoutParams);
+            personLayout.setLayoutParams(layoutParams);
         }
 
-        for (ImageView imageView : viewsToShow) {
-            imageView.setVisibility(View.VISIBLE);
+        for (FrameLayout personLayout : viewsToShow) {
+            personLayout.setVisibility(View.VISIBLE);
         }
-        for (ImageView imageView : viewsToHide) {
-            imageView.setVisibility(View.GONE);
+        for (FrameLayout personLayout : viewsToHide) {
+            personLayout.setVisibility(View.GONE);
         }
 
         log();
@@ -211,6 +229,7 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
             logView.setLayoutParams(layoutParams);
             logView.setBackgroundColor(Color.BLACK);
             logView.setTextColor(Color.WHITE);
+            logView.setPadding(10, 10, 10, 10);
 
             LAYOUT.addView(logView);
         }
