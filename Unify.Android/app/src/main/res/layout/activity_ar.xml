@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0099cc"
-    tools:context="com.owlcreativestudio.unify.FullscreenActivity">
+    tools:context="com.owlcreativestudio.unify.ARActivity">
 
     <!--camera stream will be added to this frame layout-->
     <FrameLayout

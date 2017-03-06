@@ -17,8 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.owlcreativestudio.unify.helpers.HttpHelper;
-import com.owlcreativestudio.unify.helpers.UrlHelper;
 import com.owlcreativestudio.unify.models.Login;
 
 
@@ -66,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        Intent intent = new Intent(this, FullscreenActivity.class);
+        Intent intent = new Intent(this, ARActivity.class);
 
         showProgress(true);
         UserLoginTask loginTask = new UserLoginTask(email, password, intent);

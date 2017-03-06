@@ -47,7 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        Intent intent = new Intent(this, FullscreenActivity.class);
+        Intent intent = new Intent(this, ARActivity.class);
 
         showProgress(true);
         UserRegisterTask registerTask = new UserRegisterTask(username, email, password, intent);

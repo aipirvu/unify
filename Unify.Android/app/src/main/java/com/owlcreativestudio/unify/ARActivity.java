@@ -21,7 +21,7 @@ import com.owlcreativestudio.unify.services.PositionService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FullscreenActivity extends AppCompatActivity {
+public class ARActivity extends AppCompatActivity {
     FrameLayout contentLayout;
     private boolean isVisible;
 
@@ -30,7 +30,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
-    private static final String TAG = "FullscreenActivity";
+    private static final String TAG = "ARActivity";
     private View masterLayout;
     private View controlsLayout;
 
@@ -89,7 +89,7 @@ public class FullscreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_fullscreen);
+        setContentView(R.layout.activity_ar);
 
         //set layouts
         masterLayout = findViewById(R.id.master_layout);
