@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.owlcreativestudio.unify.models.Login;
 
 
@@ -31,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     private View mLoginLayout;
     private View mMasterLayout;
 
+    private LoginButton facebookLoginButton;
+    private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +48,11 @@ public class LoginActivity extends AppCompatActivity {
         mLoginLayout = findViewById(R.id.login_layout);
         mProgressView = findViewById(R.id.login_progress);
         mMasterLayout = findViewById(R.id.master_layout);
+
+        callbackManager = CallbackManager.Factory.create();
+        facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+
+        facebookLoginButton.registerCallback(callbackManager, getFacebookCallback());
     }
 
     @Override
@@ -55,6 +68,12 @@ public class LoginActivity extends AppCompatActivity {
             Log.d("ERROR", "Location access required");
         }
         //todo display a warning and close the application
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public void signIn(View view) {
@@ -152,6 +171,24 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private FacebookCallback<LoginResult> getFacebookCallback() {
+        return new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d("LOGIN", "Logged in with facebook.");
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d("LOGIN", "Canceled logging in with facebook.");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.d("LOGIN", "Error logging in with facebook.");
+            }
+        };
+    }
 
     /* CHECK ACCESS TO SERVICES */
     private boolean hasCameraAccess() {
