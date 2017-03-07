@@ -1,14 +1,10 @@
 package com.owlcreativestudio.unify;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.Camera;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +14,15 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
+import com.facebook.ProfileTracker;
 import com.facebook.login.widget.LoginButton;
-import com.owlcreativestudio.unify.models.Login;
+import com.owlcreativestudio.unify.models.FacebookAccountState;
+import com.owlcreativestudio.unify.services.FacebookService;
+import com.owlcreativestudio.unify.helpers.ProgressHelper;
+import com.owlcreativestudio.unify.tasks.UserLoginTask;
 
 
 /**
@@ -33,26 +32,47 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_SERVICE = 0;
     private static final int REQUEST_FINE_LOCATION = 1;
 
-    private View mProgressView;
-    private View mLoginLayout;
-    private View mMasterLayout;
-
-    private LoginButton facebookLoginButton;
+    private View masterLayout;
+    private ProgressHelper progressHelper;
     private CallbackManager callbackManager;
+    private FacebookAccountState facebookAccountState;
+    private AccessTokenTracker facebookAccessTokenTracker;
+    private ProfileTracker facebookProfileTracker;
+
+    public void signIn(View view) {
+        EditText emailEditText = (EditText) findViewById(R.id.email);
+        EditText passwordEditText = (EditText) findViewById(R.id.password);
+
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        Intent intent = new Intent(this, ARActivity.class);
+
+        progressHelper.showProgress(true);
+        UserLoginTask loginTask = new UserLoginTask(this, progressHelper, email, password, intent);
+        loginTask.execute();
+    }
+
+    public void register(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mLoginLayout = findViewById(R.id.login_layout);
-        mProgressView = findViewById(R.id.login_progress);
-        mMasterLayout = findViewById(R.id.master_layout);
+        checkFacebookLoginToken();
+        checkGoogleLoginToken();
 
-        callbackManager = CallbackManager.Factory.create();
-        facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+        View loginLayout = findViewById(R.id.login_layout);
+        View loginProgress = findViewById(R.id.login_progress);
+        masterLayout = findViewById(R.id.master_layout);
 
-        facebookLoginButton.registerCallback(callbackManager, getFacebookCallback());
+
+        progressHelper = new ProgressHelper(loginProgress, loginLayout);
+
     }
 
     @Override
@@ -76,118 +96,23 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void signIn(View view) {
-        EditText emailEditText = (EditText) findViewById(R.id.email);
-        EditText passwordEditText = (EditText) findViewById(R.id.password);
 
-        String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-
-        Intent intent = new Intent(this, ARActivity.class);
-
-        showProgress(true);
-        UserLoginTask loginTask = new UserLoginTask(email, password, intent);
-        loginTask.execute();
+    private void setupFacebookLogin() {
+        callbackManager = CallbackManager.Factory.create();
+        LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+        facebookLoginButton.registerCallback(callbackManager, FacebookService.getFacebookLoginCallback());
     }
 
-    public void register(View view) {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
-    }
-
-    //// TODO: 31-Jan-17 Find a method to reuse this showProgress code instead of duplicating it in every activity
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            mLoginLayout.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginLayout.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginLayout.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mLoginLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+    /* CHECK EXISTECE OF ACCESS TOKENS */
+    private void checkFacebookLoginToken() {
+        AccessToken facebookToken = AccessToken.getCurrentAccessToken();
+        if (null != facebookAccountState.getAccessToken() && !facebookToken.isExpired()) {
+            advanceToARActivity();
         }
     }
 
-    private class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-        private final Intent mPostExecuteSuccessIntent;
-
-        UserLoginTask(String email, String password, Intent postExecuteSuccessIntent) {
-            mEmail = email;
-            mPassword = password;
-            mPostExecuteSuccessIntent = postExecuteSuccessIntent;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            Login login = new Login();
-            login.setEmail(mEmail);
-            login.setPassword(mPassword);
-
-            try {
-//                HttpHelper.Post(UrlHelper.getLoginUrl(), login);
-            } catch (Exception ex) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            showProgress(false);
-            if (success) {
-                startActivity(mPostExecuteSuccessIntent);
-                finish();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            showProgress(false);
-        }
-    }
-
-    private FacebookCallback<LoginResult> getFacebookCallback() {
-        return new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d("LOGIN", "Logged in with facebook.");
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d("LOGIN", "Canceled logging in with facebook.");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d("LOGIN", "Error logging in with facebook.");
-            }
-        };
+    private void checkGoogleLoginToken() {
+        //todo implement
     }
 
     /* CHECK ACCESS TO SERVICES */
@@ -199,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
         if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
-            Snackbar.make(mMasterLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(masterLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -225,7 +150,7 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
         if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            Snackbar.make(mMasterLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+            Snackbar.make(masterLayout, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
                     .setAction(android.R.string.ok, new View.OnClickListener() {
                         @Override
                         @TargetApi(Build.VERSION_CODES.M)
@@ -237,5 +162,10 @@ public class LoginActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FINE_LOCATION);
         }
         return false;
+    }
+
+    private void advanceToARActivity() {
+        startActivity(new Intent(this, ARActivity.class));
+        finish();
     }
 }

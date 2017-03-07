@@ -5,7 +5,7 @@ import android.hardware.Camera;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.owlcreativestudio.unify.helpers.CameraPreview;
+import com.owlcreativestudio.unify.views.CameraView;
 import com.owlcreativestudio.unify.interfaces.ARStateGetSetter;
 import com.owlcreativestudio.unify.models.ARState;
 
@@ -15,7 +15,7 @@ public class CameraService {
     private final ARStateGetSetter arStateGetSetter;
 
     private Camera camera;
-    private CameraPreview preview;
+    private CameraView preview;
 
     public CameraService(Context context, FrameLayout layout, ARStateGetSetter arStateGetSetter) {
         CONTEXT = context;
@@ -33,7 +33,7 @@ public class CameraService {
         camera.setDisplayOrientation(90);
 
         if (null == preview) {
-            preview = new CameraPreview(CONTEXT, camera, arStateGetSetter);
+            preview = new CameraView(CONTEXT, camera, arStateGetSetter);
             LAYOUT.addView(preview);
         } else {
             preview.setCamera(camera);

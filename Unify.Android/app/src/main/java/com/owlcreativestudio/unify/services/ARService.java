@@ -5,11 +5,10 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.owlcreativestudio.unify.helpers.DownloadImageTask;
+import com.owlcreativestudio.unify.tasks.DownloadImageTask;
 import com.owlcreativestudio.unify.interfaces.ARStateGetSetter;
 import com.owlcreativestudio.unify.interfaces.AdjacentPeopleSetter;
 import com.owlcreativestudio.unify.models.ARState;

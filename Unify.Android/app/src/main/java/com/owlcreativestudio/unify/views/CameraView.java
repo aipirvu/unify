@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify.helpers;
+package com.owlcreativestudio.unify.views;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -12,7 +12,7 @@ import com.owlcreativestudio.unify.models.ARState;
 import java.io.IOException;
 import java.util.List;
 
-public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
     private final ARStateGetSetter arStateGetSetter;
     private final SurfaceHolder holder;
     private final String TAG = "CameraPreview";
@@ -21,7 +21,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private List<Camera.Size> supportedPreviewSizes;
     private Camera.Size previewSize;
 
-    public CameraPreview(Context context, Camera camera, ARStateGetSetter arStateGetSetter) {
+    public CameraView(Context context, Camera camera, ARStateGetSetter arStateGetSetter) {
         super(context);
         this.camera = camera;
         this.arStateGetSetter = arStateGetSetter;
