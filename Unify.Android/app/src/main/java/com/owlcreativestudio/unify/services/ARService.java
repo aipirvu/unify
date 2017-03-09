@@ -180,7 +180,7 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private boolean isPassingXYThreshold(double current) {
-        final double ANGLE_THRESHOLD = 0.1;
+        final double ANGLE_THRESHOLD = 0.2;
         boolean isPassing = Math.abs(previousProcessedXY - current) > ANGLE_THRESHOLD;
         if (isPassing) {
             previousProcessedXY = current;

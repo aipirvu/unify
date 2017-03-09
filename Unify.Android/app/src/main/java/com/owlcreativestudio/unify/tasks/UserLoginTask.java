@@ -31,7 +31,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         login.setPassword(password);
 
         try {
-            HttpHelper.Post(UrlHelper.getLoginUrl(), login);
+//            HttpHelper.Post(UrlHelper.getLoginUrl(), login);
         } catch (Exception ex) {
             return false;
         }
