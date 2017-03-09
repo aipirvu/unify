@@ -106,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
     /* CHECK EXISTECE OF ACCESS TOKENS */
     private void checkFacebookLoginToken() {
         AccessToken facebookToken = AccessToken.getCurrentAccessToken();
-        if (null != facebookAccountState.getAccessToken() && !facebookToken.isExpired()) {
+        if (null != facebookToken && !facebookToken.isExpired()) {
             advanceToARActivity();
         }
     }
