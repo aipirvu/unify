@@ -98,7 +98,7 @@ public class ARActivity extends AppCompatActivity {
         isVisible = true;
 
         //set services
-        arService = new ARService(this, contentLayout, 50);
+        arService = new ARService(this, contentLayout, 10, 50);
         cameraService = new CameraService(this, cameraLayout, arService);
         locationService = new LocationService(this, arService);
         positionService = new PositionService(this, arService);
@@ -197,6 +197,7 @@ public class ARActivity extends AppCompatActivity {
         List<AdjacentPerson> adjacentPeople = new ArrayList<>();
         adjacentPeople.add(getPerson1());
         adjacentPeople.add(getPerson2());
+        adjacentPeople.add(getPerson3());
 
         arService.setAdjacentPeople(adjacentPeople);
     }
@@ -229,6 +230,21 @@ public class ARActivity extends AppCompatActivity {
         AdjacentPerson adjacentPerson = new AdjacentPerson();
         adjacentPerson.setName("ADL");
         adjacentPerson.setImageUrl("https://scontent.fotp3-2.fna.fbcdn.net/v/t1.0-1/p160x160/14463131_1174090729337640_5968235094959303848_n.jpg?oh=6d524d8f0a743f059a46d4b0b59766a5&oe=5966C6A6");
+        adjacentPerson.setId("" + Math.random());
+        adjacentPerson.setLocation(location);
+
+        return adjacentPerson;
+    }
+
+    private AdjacentPerson getPerson3() {
+        UnifyLocation location = new UnifyLocation();
+        location.setElevation(0);
+        location.setLatitude(45);
+        location.setLongitude(45);
+
+        AdjacentPerson adjacentPerson = new AdjacentPerson();
+        adjacentPerson.setName("Qutory");
+        adjacentPerson.setImageUrl("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
         adjacentPerson.setId("" + Math.random());
         adjacentPerson.setLocation(location);
 

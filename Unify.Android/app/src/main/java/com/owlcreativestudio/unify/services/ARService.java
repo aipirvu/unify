@@ -21,6 +21,9 @@ import java.util.List;
 
 public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private final double MAXIMUM_DISTANCE;
+    private final double MINIMUM_DISTANCE;
+    private final double MINIMUM_ICON_SIZE_MODIFIER;
+    private final double MAXIMUM_ICON_SIZE_MODIFIER;
     private final FrameLayout LAYOUT;
     private final Context CONTEXT;
 
@@ -31,11 +34,14 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private TextView logView;
     private double previousProcessedXY;
 
-    public ARService(Context context, FrameLayout layout, double maximumDistance) {
+    public ARService(Context context, FrameLayout layout, double minimumDistance, double maximumDistance) {
         CONTEXT = context;
         LAYOUT = layout;
         MAXIMUM_DISTANCE = maximumDistance;
+        MINIMUM_DISTANCE = minimumDistance;
 
+        MINIMUM_ICON_SIZE_MODIFIER = 0.3;
+        MAXIMUM_ICON_SIZE_MODIFIER = 1.0;
         arState = new ARState();
     }
 
@@ -128,8 +134,6 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private void processScene() {
-        final double MINIMUM_DISTANCE = 10;
-
         if (arState.getLocation().getLatitude() == 0 && arState.getLocation().getLongitude() == 0) {
             log("Waiting for location...");
             return;
@@ -150,20 +154,10 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
             viewsToShow.add(personLayout);
 
             double distance = getDistance(arState.getLocation(), adjacentPerson.getLocation());
-
-            if (distance > MAXIMUM_DISTANCE) {
-                distance = MAXIMUM_DISTANCE;
-            }
-            if (distance < MINIMUM_DISTANCE) {
-                distance = MINIMUM_DISTANCE;
-            }
-
-            double distanceModifier = 1 / distance * 10;
-
-            int iconSize = (int) (arState.getIconSize() * distanceModifier);
+            double distanceModifier = getDistanceModifier(distance);
+            int iconSize = getIconSize(distanceModifier);
             int leftMargin = getLeftMargin(position, iconSize);
-//            int topMargin = getTopMargin(iconSize, distanceModifier);
-            int topMargin = 500;
+            int topMargin = getTopMargin(iconSize, distanceModifier);
 
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(iconSize, iconSize);
             layoutParams.setMargins(leftMargin, topMargin, 0, 0);
@@ -205,17 +199,36 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private int getTopMargin(int iconSize, double distanceModifier) {
-        int previewHeight = arState.getPreviewHeight();
-        int mandatoryMargin = previewHeight / 10;
-        int potentiallyAddedMargin = previewHeight - (previewHeight / 5) - iconSize;
-
-        return (int) (mandatoryMargin + potentiallyAddedMargin * distanceModifier / 2);
+        int height = arState.getPreviewHeight();
+        double minimMargin = height * 0.05;
+        double maximumMargin = height - iconSize - 2 * minimMargin;
+        return (int) (maximumMargin * distanceModifier);
     }
 
     private double roundAngle(double val) {
         return Math.round(val * 100.0) / 100.0;
     }
 
+    private double getDistanceModifier(double distance) {
+        if (distance > MAXIMUM_DISTANCE) {
+            distance = MAXIMUM_DISTANCE;
+        }
+        if (distance < MINIMUM_DISTANCE) {
+            distance = MINIMUM_DISTANCE;
+        }
+
+        return MINIMUM_DISTANCE / distance;
+    }
+
+    private int getIconSize(double iconSizeModifier) {
+        if (iconSizeModifier > MAXIMUM_ICON_SIZE_MODIFIER) {
+            iconSizeModifier = MAXIMUM_ICON_SIZE_MODIFIER;
+        }
+        if (iconSizeModifier < MINIMUM_ICON_SIZE_MODIFIER) {
+            iconSizeModifier = MINIMUM_ICON_SIZE_MODIFIER;
+        }
+        return (int) (arState.getPreviewWidth() / 2 * iconSizeModifier);
+    }
 
     private void log() {
         log(getLogMessage());

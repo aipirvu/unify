@@ -46,10 +46,6 @@ public class ARState {
         this.previewWidth = previewWidth;
     }
 
-    public int getIconSize() {
-        return previewWidth / 3;
-    }
-
     public UnifyLocation getLocation() {
         return location;
     }
