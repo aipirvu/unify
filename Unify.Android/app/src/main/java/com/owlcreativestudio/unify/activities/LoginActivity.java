@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify;
+package com.owlcreativestudio.unify.activities;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -19,6 +19,7 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.ProfileTracker;
 import com.facebook.login.widget.LoginButton;
+import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.FacebookAccountState;
 import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;

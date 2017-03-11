@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify;
+package com.owlcreativestudio.unify.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.User;
 import com.owlcreativestudio.unify.helpers.HttpHelper;
 import com.owlcreativestudio.unify.helpers.UrlHelper;

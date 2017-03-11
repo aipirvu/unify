@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify;
+package com.owlcreativestudio.unify.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.AdjacentPerson;
 import com.owlcreativestudio.unify.models.UnifyLocation;
 import com.owlcreativestudio.unify.services.ARService;

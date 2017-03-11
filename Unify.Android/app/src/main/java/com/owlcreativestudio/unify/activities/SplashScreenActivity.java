@@ -1,11 +1,11 @@
-package com.owlcreativestudio.unify;
+package com.owlcreativestudio.unify.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
+
+import com.owlcreativestudio.unify.R;
 
 public class SplashScreenActivity extends Activity {
     private final int SPLASH_SCREEN_DISPLAY_DURATION = 2000;

@@ -1,4 +1,4 @@
-package com.owlcreativestudio.unify;
+package com.owlcreativestudio.unify.activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
