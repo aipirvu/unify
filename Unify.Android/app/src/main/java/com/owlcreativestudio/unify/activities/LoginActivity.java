@@ -67,6 +67,8 @@ public class LoginActivity extends AppCompatActivity {
         checkFacebookLoginToken();
         checkGoogleLoginToken();
 
+        setupFacebookLogin();
+
         View loginLayout = findViewById(R.id.login_layout);
         View loginProgress = findViewById(R.id.login_progress);
         masterLayout = findViewById(R.id.master_layout);

@@ -162,7 +162,8 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
 
             int iconSize = (int) (arState.getIconSize() * distanceModifier);
             int leftMargin = getLeftMargin(position, iconSize);
-            int topMargin = getTopMargin(iconSize, distanceModifier);
+//            int topMargin = getTopMargin(iconSize, distanceModifier);
+            int topMargin = 500;
 
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(iconSize, iconSize);
             layoutParams.setMargins(leftMargin, topMargin, 0, 0);
