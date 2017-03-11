@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.owlcreativestudio.unify.R;
 
 public class SplashScreenActivity extends Activity {
-    private final int SPLASH_SCREEN_DISPLAY_DURATION = 2000;
+    private final int SPLASH_SCREEN_DISPLAY_DURATION = 500;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

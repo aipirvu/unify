@@ -24,25 +24,31 @@
     </FrameLayout>
 
     <!--some settings will go here. to be updated    -->
-    <LinearLayout
-        android:id="@+id/controls_layout"
-        style="?metaButtonBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:background="@color/black_overlay"
-        android:fitsSystemWindows="true"
-        android:orientation="horizontal"
-        tools:ignore="UselessParent">
 
-        <Button
+    <RelativeLayout
+        android:id="@+id/controls_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
             android:id="@+id/settings_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_weight="1"
             android:onClick="settings"
-            android:text="@string/settings_button" />
-
-    </LinearLayout>
+            app:srcCompat="@android:drawable/ic_menu_preferences"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="30dp" />
+        <ImageView
+            android:id="@+id/sign_out_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:onClick="settings"
+            app:srcCompat="@android:drawable/ic_menu_preferences"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="60dp" />
+    </RelativeLayout>
 </FrameLayout>

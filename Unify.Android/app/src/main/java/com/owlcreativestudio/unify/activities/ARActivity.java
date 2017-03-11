@@ -61,10 +61,6 @@ public class ARActivity extends AppCompatActivity {
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
-            ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.show();
-            }
             controlsLayout.setVisibility(View.VISIBLE);
         }
     };
@@ -91,6 +87,7 @@ public class ARActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_ar);
+        hideActionBar();
 
         //set layouts
         masterLayout = findViewById(R.id.master_layout);
@@ -170,11 +167,6 @@ public class ARActivity extends AppCompatActivity {
     }
 
     private void hide() {
-        // Hide UI first
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.hide();
-        }
         controlsLayout.setVisibility(View.GONE);
         isVisible = false;
 
@@ -186,8 +178,7 @@ public class ARActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        masterLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        masterLayout.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         isVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
@@ -210,7 +201,7 @@ public class ARActivity extends AppCompatActivity {
         arService.setAdjacentPeople(adjacentPeople);
     }
 
-    private AdjacentPerson getPerson1(){
+    private AdjacentPerson getPerson1() {
         UnifyLocation location = new UnifyLocation();
         location.setElevation(0);
         location.setLatitude(44.4317468);
@@ -227,7 +218,7 @@ public class ARActivity extends AppCompatActivity {
         return adjacentPerson;
     }
 
-    private AdjacentPerson getPerson2(){
+    private AdjacentPerson getPerson2() {
         UnifyLocation location = new UnifyLocation();
         location.setElevation(0);
         location.setLatitude(44.431785);
@@ -243,4 +234,12 @@ public class ARActivity extends AppCompatActivity {
 
         return adjacentPerson;
     }
+
+    private void hideActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
+        }
+    }
+
 }
