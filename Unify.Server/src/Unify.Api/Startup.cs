@@ -48,6 +48,10 @@ namespace Unify.Api
                     {
                         //https://brettedotnet.wordpress.com/2014/07/16/web-api-and-interface-parameters/
                         options.SerializerSettings.Converters.Add(new UserCustomConverter());
+                        options.SerializerSettings.Converters.Add(new RegisterCustomConverter());
+                        options.SerializerSettings.Converters.Add(new FacebookProfileCustomConverter());
+                        options.SerializerSettings.Converters.Add(new GoogleProfileCustomConverter());
+                        options.SerializerSettings.Converters.Add(new LinkedInProfileCustomConverter());
                     });
 
             //app

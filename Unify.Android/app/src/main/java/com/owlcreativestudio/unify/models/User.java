@@ -1,9 +1,5 @@
 package com.owlcreativestudio.unify.models;
 
-/**
- * Created by aipir on 06-Feb-17.
- */
-
 public class User {
     private String id;
     private String username;

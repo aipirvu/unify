@@ -1,8 +1,17 @@
 package com.owlcreativestudio.unify.models;
 
-public class Login {
+public class Register {
+    private String displayName;
     private String email;
     private String password;
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
     public String getEmail() {
         return email;

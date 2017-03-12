@@ -4,16 +4,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Unify.Common.Entities;
+using Unify.Api.ViewModels;
 using Unify.Common.Interfaces;
 
 namespace Unify.Api.CustomCoverters
 {
-    public class UserCustomConverter : UnifyCustomConverter<IUser>
+    public class RegisterCustomConverter : UnifyCustomConverter<IRegister>
     {
-        public override IUser Create(Type objectType)
+        public override IRegister Create(Type objectType)
         {
-            return new User();
+            return new Register();
         }
     }
 }

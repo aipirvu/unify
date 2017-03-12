@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unify.Api.ViewModels;
 using Unify.Common.Entities;
 using Unify.Common.Interfaces;
 
 namespace Unify.Api.CustomCoverters
 {
-    public class UserCustomConverter : UnifyCustomConverter<IUser>
+    public class LinkedInProfileCustomConverter : UnifyCustomConverter<ILinkedInProfile>
     {
-        public override IUser Create(Type objectType)
+        public override ILinkedInProfile Create(Type objectType)
         {
-            return new User();
+            return new SocialProfile();
         }
     }
 }
