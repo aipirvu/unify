@@ -25,6 +25,8 @@ import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
 import com.owlcreativestudio.unify.tasks.UserLoginTask;
 
+import java.util.Arrays;
+
 
 /**
  * A login screen that offers login via email/password.
@@ -103,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
     private void setupFacebookLogin() {
         callbackManager = CallbackManager.Factory.create();
         LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
+        facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "user_friends", "email"));
         facebookLoginButton.registerCallback(callbackManager, FacebookService.getFacebookLoginCallback());
     }
 
@@ -110,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
     private void checkFacebookLoginToken() {
         AccessToken facebookToken = AccessToken.getCurrentAccessToken();
         if (null != facebookToken && !facebookToken.isExpired()) {
-            advanceToARActivity();
+//            advanceToARActivity();
         }
     }
 
