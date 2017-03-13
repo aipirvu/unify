@@ -20,9 +20,9 @@ import com.facebook.CallbackManager;
 import com.facebook.ProfileTracker;
 import com.facebook.login.widget.LoginButton;
 import com.owlcreativestudio.unify.R;
-import com.owlcreativestudio.unify.models.FacebookAccountState;
 import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
+import com.owlcreativestudio.unify.services.SharedPreferencesService;
 import com.owlcreativestudio.unify.tasks.UserLoginTask;
 
 import java.util.Arrays;
@@ -38,9 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private View masterLayout;
     private ProgressHelper progressHelper;
     private CallbackManager callbackManager;
-    private FacebookAccountState facebookAccountState;
-    private AccessTokenTracker facebookAccessTokenTracker;
-    private ProfileTracker facebookProfileTracker;
+    private FacebookService facebookService;
 
     public void signIn(View view) {
         EditText emailEditText = (EditText) findViewById(R.id.email);
@@ -65,6 +63,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //setup services
+        this.facebookService = new FacebookService(new SharedPreferencesService(this));
 
         checkFacebookLoginToken();
 
@@ -105,7 +106,7 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
         LoginButton facebookLoginButton = (LoginButton) findViewById(R.id.facebook_sign_in_button);
         facebookLoginButton.setReadPermissions(Arrays.asList("public_profile", "user_friends", "email"));
-        facebookLoginButton.registerCallback(callbackManager, FacebookService.getFacebookLoginCallback());
+        facebookLoginButton.registerCallback(callbackManager, this.facebookService.getFacebookLoginCallback());
     }
 
     /* CHECK EXISTECE OF ACCESS TOKENS */
