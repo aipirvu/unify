@@ -67,7 +67,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         checkFacebookLoginToken();
-        checkGoogleLoginToken();
 
         setupFacebookLogin();
 
@@ -115,10 +114,6 @@ public class LoginActivity extends AppCompatActivity {
         if (null != facebookToken && !facebookToken.isExpired()) {
 //            advanceToARActivity();
         }
-    }
-
-    private void checkGoogleLoginToken() {
-        //todo implement
     }
 
     /* CHECK ACCESS TO SERVICES */

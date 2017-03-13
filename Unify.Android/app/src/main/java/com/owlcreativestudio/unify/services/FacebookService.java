@@ -61,51 +61,17 @@ public class FacebookService {
     }
 
     private static void getinfo(AccessToken accessToken) {
-        GraphRequestBatch batch = new GraphRequestBatch(
-                GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject jsonObject, GraphResponse response) {
-                        Log.d("profile", "");
-                    }
-                }),
-                GraphRequest.newMyFriendsRequest(accessToken, new GraphRequest.GraphJSONArrayCallback() {
-                    @Override
-                    public void onCompleted(JSONArray jsonArray, GraphResponse response) {
-                        Log.d("friends", "");
-                    }
-                })
-        );
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, cover, name, first_name, last_name, age_range, link, gender, locale, picture, timezone, updated_time, verified, email");
-        batch.get(0).setParameters(parameters);
-        batch.get(1).setParameters(parameters);
-
-        batch.addCallback(new GraphRequestBatch.Callback() {
+        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
-            public void onBatchCompleted(GraphRequestBatch graphRequests) {
-                Log.d("batch", "");
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                // Application code
+                Log.d("done", "done");
             }
         });
-        batch.executeAsync();
 
-//        GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-//            @Override
-//            public void onCompleted(JSONObject object, GraphResponse response) {
-//                // Application code
-//                Log.d("done", "done");
-//            }
-//        });
-//
-//        GraphRequest graphRequest = GraphRequest.newMyFriendsRequest(accessToken, new GraphRequest.GraphJSONArrayCallback() {
-//            @Override
-//            public void onCompleted(JSONArray jsonArray, GraphResponse response) {
-//                // Application code for users friends
-//                Log.d("done", "done");
-//            }
-//        });
-//        Bundle parameters = new Bundle();
-//        parameters.putString("fields", "id, cover, name, first_name, last_name, age_range, link, gender, locale, picture, timezone, updated_time, verified");
-//        request.setParameters(parameters);
-//        request.executeAsync();
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, cover, name, first_name, last_name, age_range, link, gender, locale, picture, timezone, updated_time, verified, email");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 }
