@@ -1,5 +1,9 @@
 package com.owlcreativestudio.unify.services;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.facebook.AccessToken;
@@ -8,6 +12,11 @@ import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
+import com.owlcreativestudio.unify.activities.ARActivity;
+import com.owlcreativestudio.unify.activities.RegisterActivity;
+import com.owlcreativestudio.unify.helpers.HttpHelper;
+import com.owlcreativestudio.unify.helpers.UrlHelper;
+import com.owlcreativestudio.unify.models.FacebookLogin;
 import com.owlcreativestudio.unify.models.FacebookProfile;
 import com.owlcreativestudio.unify.models.UserAccount;
 
@@ -16,9 +25,11 @@ import org.json.JSONObject;
 
 public class FacebookService {
     private final SharedPreferencesService sharedPreferencesService;
+    private final Activity activity;
 
-    public FacebookService(SharedPreferencesService sharedPreferencesService) {
-        this.sharedPreferencesService = sharedPreferencesService;
+    public FacebookService(Activity activity) {
+        this.activity = activity;
+        this.sharedPreferencesService = new SharedPreferencesService(activity);
     }
 
     public FacebookCallback<LoginResult> getFacebookLoginCallback() {
@@ -59,7 +70,7 @@ public class FacebookService {
 //        };
 //    }
 
-    private void processAccessToken(AccessToken accessToken) {
+    private void processAccessToken(final AccessToken accessToken) {
         final String ID = "id";
         final String NAME = "name";
         final String FIRST_NAME = "first_name";
@@ -89,7 +100,7 @@ public class FacebookService {
                         facebookProfile.setName(object.getString(NAME));
                         facebookProfile.setFirstName(object.getString(FIRST_NAME));
                         facebookProfile.setLastName(object.getString(LAST_NAME));
-                        facebookProfile.setAgeRange(object.getString(AGE_RANGE));
+                        facebookProfile.setAgeRange(object.getInt(AGE_RANGE));
                         facebookProfile.setProfileLink(object.getString(LINK));
                         facebookProfile.setGender(object.getString(GENDER));
                         facebookProfile.setLocale(object.getString(LOCALE));
@@ -98,6 +109,11 @@ public class FacebookService {
                         facebookProfile.setEmail(object.getString(EMAIL));
 
                         UserAccount userAccount = sharedPreferencesService.getUserAccount();
+
+                        if (null == userAccount) {
+                            userAccount = HttpHelper.PostWithResponse(UrlHelper.getLoginUrl(), new FacebookLogin(facebookProfile.getId()));
+                        }
+
                         if (null == userAccount) {
                             requiresRegistration = true;
                             userAccount = new UserAccount();
@@ -109,14 +125,16 @@ public class FacebookService {
 
                         userAccount.setFacebookProfile(facebookProfile);
 
+
                         if (requiresRegistration) {
-                            //todo redirect to register
+                            activity.startActivity(new Intent(activity, RegisterActivity.class));
                         } else {
-                            //update account and redirect to ar activity
+                            //todo update account;
+                            activity.startActivity(new Intent(activity, ARActivity.class));
                         }
+                        activity.finish();
 
-
-                    } catch (JSONException ex) {
+                    } catch (Exception ex) {
                         error = ex;
                         errorMessage = "An error occurred while obtaining facebook profile information. ";
                     }

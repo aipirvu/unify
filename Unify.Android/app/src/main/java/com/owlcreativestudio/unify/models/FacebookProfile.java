@@ -1,20 +1,20 @@
 package com.owlcreativestudio.unify.models;
 
 public class FacebookProfile {
-    private String id;
-    private String name;
+    private String id = "";
+    private String name = "";
     //could get cover;
-    private String firstName;
-    private String lastName;
-    private String ageRange;
-    private String profileLink;
-    private String gender;
-    private String locale;
-    private String pictureLink;
+    private String firstName = "";
+    private String lastName = "";
+    private int ageRange;
+    private String profileLink = "";
+    private String gender = "";
+    private String locale = "";
+    private String pictureLink = "";
     private int timezone;
     //could get updated_time
     //could get verified
-    private String email;
+    private String email = "";
 
     public String getId() {
         return id;
@@ -48,11 +48,11 @@ public class FacebookProfile {
         this.lastName = lastName;
     }
 
-    public String getAgeRange() {
+    public int getAgeRange() {
         return ageRange;
     }
 
-    public void setAgeRange(String ageRange) {
+    public void setAgeRange(int ageRange) {
         this.ageRange = ageRange;
     }
 

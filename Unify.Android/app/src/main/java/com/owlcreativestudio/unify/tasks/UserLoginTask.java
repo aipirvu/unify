@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 
-import com.owlcreativestudio.unify.helpers.HttpHelper;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
-import com.owlcreativestudio.unify.helpers.UrlHelper;
-import com.owlcreativestudio.unify.models.Login;
+import com.owlcreativestudio.unify.models.AppLogin;
 
 public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     private final String email;
@@ -26,7 +24,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        Login login = new Login();
+        AppLogin login = new AppLogin();
         login.setEmail(email);
         login.setPassword(password);
 

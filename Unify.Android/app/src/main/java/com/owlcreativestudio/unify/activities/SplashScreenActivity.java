@@ -11,18 +11,27 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.owlcreativestudio.unify.R;
+import com.owlcreativestudio.unify.models.UserAccount;
+import com.owlcreativestudio.unify.services.SharedPreferencesService;
 
 import java.security.MessageDigest;
 
 public class SplashScreenActivity extends Activity {
-    private final int SPLASH_SCREEN_DISPLAY_DURATION = 500;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        final int SPLASH_SCREEN_DISPLAY_DURATION = 500;
+        final Class redirectActivity;
+
+        if (isLogged()) {
+            redirectActivity = ARActivity.class;
+        } else {
+            redirectActivity = LoginActivity.class;
+        }
+
         try {
             PackageInfo info = getPackageManager().getPackageInfo("com.owlcreativestudio.unify", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
@@ -30,20 +39,30 @@ public class SplashScreenActivity extends Activity {
                 md.update(signature.toByteArray());
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
 
         }
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent mainIntent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                Intent mainIntent = new Intent(SplashScreenActivity.this, redirectActivity.getClass());
                 SplashScreenActivity.this.startActivity(mainIntent);
                 SplashScreenActivity.this.finish();
             }
         }, SPLASH_SCREEN_DISPLAY_DURATION);
+    }
 
 
+    private boolean isLogged() {
+        SharedPreferencesService sharedPreferencesService = new SharedPreferencesService(this);
+        UserAccount userAccount = sharedPreferencesService.getUserAccount();
+        if (null == userAccount) {
+            return false;
+        }
+        if (userAccount.getName().isEmpty()) {
+            return false;
+        }
+        return true;
     }
 }

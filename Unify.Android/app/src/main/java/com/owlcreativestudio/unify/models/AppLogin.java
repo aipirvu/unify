@@ -1,6 +1,6 @@
 package com.owlcreativestudio.unify.models;
 
-public class Login {
+public class AppLogin {
     private String email;
     private String password;
 

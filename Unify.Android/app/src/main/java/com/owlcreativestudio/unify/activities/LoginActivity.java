@@ -15,14 +15,11 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
-import com.facebook.ProfileTracker;
 import com.facebook.login.widget.LoginButton;
 import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
-import com.owlcreativestudio.unify.services.SharedPreferencesService;
 import com.owlcreativestudio.unify.tasks.UserLoginTask;
 
 import java.util.Arrays;
@@ -65,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         //setup services
-        this.facebookService = new FacebookService(new SharedPreferencesService(this));
+        this.facebookService = new FacebookService(this);
 
         checkFacebookLoginToken();
 

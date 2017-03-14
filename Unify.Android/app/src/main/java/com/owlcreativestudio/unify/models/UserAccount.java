@@ -1,11 +1,11 @@
 package com.owlcreativestudio.unify.models;
 
 public class UserAccount {
-    String id;
-    String username;
-    String email;
-    String name;
-    String pictureLink;
+    String id = "";
+    String username = "";
+    String email = "";
+    String name = "";
+    String pictureLink = "";
     FacebookProfile facebookProfile;
 
     public String getId() {

@@ -1,24 +1,15 @@
 package com.owlcreativestudio.unify.models;
 
 public class Register {
-    private String displayName;
-    private String email;
+    private UserAccount userAccount;
     private String password;
 
-    public String getDisplayName() {
-        return displayName;
+    public UserAccount getUserAccount() {
+        return userAccount;
     }
 
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
     }
 
     public String getPassword() {

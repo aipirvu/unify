@@ -24,6 +24,10 @@ public class HttpHelper {
         SendRequest(METHOD_POST, url, content);
     }
 
+    public static <T, R> R PostWithResponse(String url, T content) throws Exception {
+        return SendRequestWithResponse(METHOD_POST, url, content);
+    }
+
     public static <T> void Put(String url, T content) throws Exception {
         SendRequest(METHOD_PUT, url, content);
     }
@@ -52,6 +56,31 @@ public class HttpHelper {
         if (responseCode != HTTP_CODE_OK) {
             throw new Exception("An error occurred.");
         }
+    }
+
+    private static <T, R> R SendRequestWithResponse(String method, String url, T content) throws Exception {
+        Gson gson = new GsonBuilder().create();
+        String serializedContent = gson.toJson(content);
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestMethod(method);
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setUseCaches(false);
+        connection.setDoOutput(true);
+
+        OutputStream outputStream = connection.getOutputStream();
+        outputStream.write(serializedContent.getBytes());
+        outputStream.flush();
+        outputStream.close();
+
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode != HTTP_CODE_OK) {
+            throw new Exception("An error occurred.");
+        }
+
+        //todo check how to convert this. If the getResponseMessage obtains the request body as json or not
+        return (R) connection.getResponseMessage();
     }
 
     private static <T> T SendGetRequest(String url) throws Exception {
