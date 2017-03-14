@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace Unify.Common.Interfaces
 {
-    public interface ILinkedInProfile : ISocialProfile
+    public interface IFacebookLogin
     {
+        string FacebookId { get; set; }
     }
 }

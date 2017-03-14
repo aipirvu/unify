@@ -10,9 +10,9 @@ using Unify.Common.Interfaces;
 namespace Unify.Api.Controllers
 {
     [Route("api/[controller]")]
-    public class UserController : UnifyController<IUser>
+    public class UserController : UnifyController<IUserAccount>
     {
-        public UserController(IRepository<IUser> userRepository) : base(userRepository)
+        public UserController(IRepository<IUserAccount> userRepository) : base(userRepository)
         { }
     }
 }

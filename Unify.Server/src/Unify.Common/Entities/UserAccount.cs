@@ -8,7 +8,7 @@ using Unify.Common.Interfaces;
 
 namespace Unify.Common.Entities
 {
-    public class User : IUser
+    public class UserAccount : IUserAccount
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -17,5 +17,6 @@ namespace Unify.Common.Entities
         public string Password { get; set; }
         public string Salt { get; set; }
         public string Email { get; set; }
+        public IFacebookProfile facebookProfile { get; set; }
     }
 }

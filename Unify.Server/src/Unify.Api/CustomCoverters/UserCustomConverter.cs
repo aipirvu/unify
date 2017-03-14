@@ -9,11 +9,11 @@ using Unify.Common.Interfaces;
 
 namespace Unify.Api.CustomCoverters
 {
-    public class UserCustomConverter : UnifyCustomConverter<IUser>
+    public class UserCustomConverter : UnifyCustomConverter<IUserAccount>
     {
-        public override IUser Create(Type objectType)
+        public override IUserAccount Create(Type objectType)
         {
-            return new User();
+            return new UserAccount();
         }
     }
 }

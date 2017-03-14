@@ -50,13 +50,13 @@ namespace Unify.Api
                         options.SerializerSettings.Converters.Add(new UserCustomConverter());
                         options.SerializerSettings.Converters.Add(new RegisterCustomConverter());
                         options.SerializerSettings.Converters.Add(new FacebookProfileCustomConverter());
-                        options.SerializerSettings.Converters.Add(new GoogleProfileCustomConverter());
-                        options.SerializerSettings.Converters.Add(new LinkedInProfileCustomConverter());
+                        options.SerializerSettings.Converters.Add(new FacebookLoginCustomConverter());
+                        options.SerializerSettings.Converters.Add(new AppLoginCustomConverter());
                     });
 
             //app
-            services.AddTransient<IUser, User>();
-            services.AddTransient<IRepository<IUser>, UserRepository>();
+            services.AddTransient<IUserAccount, UserAccount>();
+            services.AddTransient<IRepository<IUserAccount>, UserRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IMongoClient, MongoClient>();
 
@@ -78,7 +78,7 @@ namespace Unify.Api
         
         public void ConfigureMongoDBClassMap()
         {
-            BsonClassMap.RegisterClassMap<User>();
+            BsonClassMap.RegisterClassMap<UserAccount>();
         }
 
     }

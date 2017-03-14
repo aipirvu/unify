@@ -22,7 +22,7 @@ namespace Unify.Api.Controllers
         }
         
         [HttpPost]
-        public IActionResult Post([FromBody]Login login)
+        public IActionResult Post([FromBody]IAppLogin login)
         {
             var user = _userRepository.GetByEmail(login.Email);
             if (user.Password != login.Password)

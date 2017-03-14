@@ -7,8 +7,8 @@ using Unify.Common.Interfaces;
 
 namespace Unify.Data
 {
-    public interface IUserRepository : IRepository<IUser>
+    public interface IUserRepository : IRepository<IUserAccount>
     {
-        IUser GetByEmail(string email);
+        IUserAccount GetByEmail(string email);
     }
 }

@@ -13,7 +13,7 @@ namespace Unify.Api.CustomCoverters
     {
         public override IFacebookProfile Create(Type objectType)
         {
-            return new SocialProfile();
+            return new FacebookProfile();
         }
     }
 }

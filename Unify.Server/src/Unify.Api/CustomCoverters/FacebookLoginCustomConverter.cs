@@ -5,16 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Unify.Api.ViewModels;
-using Unify.Common.Entities;
 using Unify.Common.Interfaces;
 
 namespace Unify.Api.CustomCoverters
 {
-    public class LinkedInProfileCustomConverter : UnifyCustomConverter<ILinkedInProfile>
+    public class FacebookLoginCustomConverter : UnifyCustomConverter<IFacebookLogin>
     {
-        public override ILinkedInProfile Create(Type objectType)
+        public override IFacebookLogin Create(Type objectType)
         {
-            return new SocialProfile();
+            return new FacebookLogin();
         }
     }
 }

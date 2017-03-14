@@ -81,7 +81,7 @@ namespace Unify.Data
              * */
             Type[] concreteTypes = new Type[]
             {
-                typeof(User)
+                typeof(UserAccount)
             };
 
             foreach (var concreteType in concreteTypes)

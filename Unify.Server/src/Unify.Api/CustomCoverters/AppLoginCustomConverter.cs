@@ -9,11 +9,11 @@ using Unify.Common.Interfaces;
 
 namespace Unify.Api.CustomCoverters
 {
-    public class GoogleProfileCustomConverter : UnifyCustomConverter<IGoogleProfile>
+    public class AppLoginCustomConverter : UnifyCustomConverter<IAppLogin>
     {
-        public override IGoogleProfile Create(Type objectType)
+        public override IAppLogin Create(Type objectType)
         {
-            return new SocialProfile();
+            return new AppLogin();
         }
     }
 }

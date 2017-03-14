@@ -6,9 +6,9 @@ using Unify.Common.Interfaces;
 
 namespace Unify.Api.ViewModels
 {
-    public class Register : IRegister
+    public class AppLogin: IAppLogin
     {
-        public IUserAccount UserAccount { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }
