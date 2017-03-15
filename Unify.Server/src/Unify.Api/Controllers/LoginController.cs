@@ -20,15 +20,36 @@ namespace Unify.Api.Controllers
         {
             _userRepository = repository;
         }
-        
-        [HttpPost]
-        public IActionResult Post([FromBody]IAppLogin login)
+
+        [HttpPost("app")]
+        public IActionResult AppLogin([FromBody]IAppLogin login)
         {
             var user = _userRepository.GetByEmail(login.Email);
+            if (null == user)
+            {
+                return NotFound();
+            }
             if (user.Password != login.Password)
             {
                 return Forbid();
             }
+            return Ok();
+        }
+
+        [HttpPost("facebook")]
+        public IActionResult FacebookLogin([FromBody]IFacebookLogin login)
+        {
+            var user = _userRepository.GetByEmail(login.FacebookId);
+            if (null == user)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+        [HttpPost]
+        public IActionResult test()
+        {
             return Ok();
         }
     }

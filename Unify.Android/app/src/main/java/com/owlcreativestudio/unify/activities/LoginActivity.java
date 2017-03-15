@@ -18,6 +18,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.owlcreativestudio.unify.R;
+import com.owlcreativestudio.unify.models.AppLogin;
 import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
 import com.owlcreativestudio.unify.tasks.UserLoginTask;
@@ -43,11 +44,14 @@ public class LoginActivity extends AppCompatActivity {
 
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
+        AppLogin login = new AppLogin();
+        login.setEmail(email);
+        login.setPassword(password);
 
         Intent intent = new Intent(this, ARActivity.class);
 
         progressHelper.showProgress(true);
-        UserLoginTask loginTask = new UserLoginTask(this, progressHelper, email, password, intent);
+        UserLoginTask loginTask = new UserLoginTask(this, progressHelper, login, intent);
         loginTask.execute();
     }
 

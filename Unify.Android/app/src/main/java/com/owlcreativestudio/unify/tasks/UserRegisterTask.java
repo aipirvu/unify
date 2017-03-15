@@ -8,8 +8,8 @@ import com.owlcreativestudio.unify.helpers.HttpHelper;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
 import com.owlcreativestudio.unify.helpers.UrlHelper;
 import com.owlcreativestudio.unify.models.Register;
-import com.owlcreativestudio.unify.models.User;
 import com.owlcreativestudio.unify.services.SharedPreferencesService;
+import com.owlcreativestudio.unify.services.UserAccountService;
 
 public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -17,7 +17,9 @@ public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
     private final Intent postExecuteSuccessIntent;
     private final ProgressHelper progressHelper;
     private final Activity activity;
+    private final UserAccountService userAccountService;
     private final SharedPreferencesService sharedPreferencesService;
+    private String message;
 
     public UserRegisterTask(Activity activity, ProgressHelper progressHelper, Register register, Intent postExecuteSuccessIntent) {
         this.register = register;
@@ -25,17 +27,13 @@ public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
         this.activity = activity;
         this.progressHelper = progressHelper;
         this.sharedPreferencesService = new SharedPreferencesService(activity);
+        this.userAccountService = new UserAccountService();
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        try {
-            HttpHelper.Post(UrlHelper.getUserUrl(), register);
-            //todo might require to get back the userAccount
-        } catch (Exception ex) {
-            return false;
-        }
-        return true;
+        this.message = this.userAccountService.register(this.register);
+        return message.isEmpty();
     }
 
     @Override
@@ -47,6 +45,7 @@ public class UserRegisterTask extends AsyncTask<Void, Void, Boolean> {
         } else {
             //todo message user;
         }
+        progressHelper.showProgress(false);
     }
 
     @Override

@@ -16,27 +16,27 @@ public class HttpHelper {
     private static String METHOD_DELETE = "DELETE";
     private static int HTTP_CODE_OK = 200;
 
-    public static <T> T Get(String url) throws Exception {
-        return SendGetRequest(url);
+    public static <R> R get(String url, Class<R> responseType) throws Exception {
+        return sendRequestWithResponse(METHOD_GET, url, null, responseType);
     }
 
-    public static <T> void Post(String url, T content) throws Exception {
-        SendRequest(METHOD_POST, url, content);
+    public static <T> void post(String url, T content) throws Exception {
+        sendRequest(METHOD_POST, url, content);
     }
 
-    public static <T, R> R PostWithResponse(String url, T content) throws Exception {
-        return SendRequestWithResponse(METHOD_POST, url, content);
+    public static <T, R> R postWithResponse(String url, T content, Class<R> responseType) throws Exception {
+        return sendRequestWithResponse(METHOD_POST, url, content, responseType);
     }
 
-    public static <T> void Put(String url, T content) throws Exception {
-        SendRequest(METHOD_PUT, url, content);
+    public static <T> void put(String url, T content) throws Exception {
+        sendRequest(METHOD_PUT, url, content);
     }
 
-    public static <T> void Delete(String url) throws Exception {
-        SendRequest(METHOD_DELETE, url, null);
+    public static <T> void delete(String url) throws Exception {
+        sendRequest(METHOD_DELETE, url, null);
     }
 
-    private static <T> void SendRequest(String method, String url, T content) throws Exception {
+    private static <T> void sendRequest(String method, String url, T content) throws Exception {
         Gson gson = new GsonBuilder().create();
         String serializedContent = gson.toJson(content);
 
@@ -54,13 +54,12 @@ public class HttpHelper {
         int responseCode = connection.getResponseCode();
 
         if (responseCode != HTTP_CODE_OK) {
-            throw new Exception("An error occurred.");
+            throw new Exception("An error occurred: " + responseCode);
         }
     }
 
-    private static <T, R> R SendRequestWithResponse(String method, String url, T content) throws Exception {
-        Gson gson = new GsonBuilder().create();
-        String serializedContent = gson.toJson(content);
+    private static <T, R> R sendRequestWithResponse(String method, String url, T content, Class<R> responseType) throws Exception {
+        Gson serializer = new GsonBuilder().create();
 
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod(method);
@@ -68,73 +67,29 @@ public class HttpHelper {
         connection.setUseCaches(false);
         connection.setDoOutput(true);
 
-        OutputStream outputStream = connection.getOutputStream();
-        outputStream.write(serializedContent.getBytes());
-        outputStream.flush();
-        outputStream.close();
-
-        int responseCode = connection.getResponseCode();
-
-        if (responseCode != HTTP_CODE_OK) {
-            throw new Exception("An error occurred.");
+        if (null !=  content) {
+            String serializedContent = serializer.toJson(content);
+            OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(serializedContent.getBytes());
+            outputStream.flush();
+            outputStream.close();
         }
 
-        //todo check how to convert this. If the getResponseMessage obtains the request body as json or not
-        return (R) connection.getResponseMessage();
-    }
-
-    private static <T> T SendGetRequest(String url) throws Exception {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-        connection.setRequestMethod(METHOD_GET);
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setUseCaches(false);
-        connection.setDoOutput(true);
-
         int responseCode = connection.getResponseCode();
 
         if (responseCode != HTTP_CODE_OK) {
-            throw new Exception("An error occurred.");
+            throw new Exception("An error occurred: " + responseCode);
         }
 
         BufferedReader inputStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder serializedResponse = new StringBuilder();
 
         while ((inputLine = inputStream.readLine()) != null) {
-            response.append(inputLine);
+            serializedResponse.append(inputLine);
         }
         inputStream.close();
 
-        Gson gson = new GsonBuilder().create();
-//        return gson.fromJson(inputStream, User.class);
-
-        throw new Exception("Not implemented");
+        return serializer.fromJson(serializedResponse.toString(), responseType);
     }
-
-//
-//    private static User SendGetRequest(String url) throws Exception {
-//        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-//        connection.setRequestMethod(METHOD_GET);
-//        connection.setRequestProperty("Content-Type", "application/json");
-//        connection.setUseCaches(false);
-//        connection.setDoOutput(true);
-//
-//        int responseCode = connection.getResponseCode();
-//
-//        if (responseCode != HTTP_CODE_OK) {
-//            throw new Exception("An error occurred.");
-//        }
-//
-//        BufferedReader inputStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//        String inputLine;
-//        StringBuffer response = new StringBuffer();
-//
-//        while ((inputLine = inputStream.readLine()) != null) {
-//            response.append(inputLine);
-//        }
-//        inputStream.close();
-//
-//        Gson gson = new GsonBuilder().create();
-//        return gson.fromJson(inputStream, User.class);
-//    }
 }

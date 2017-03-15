@@ -1,8 +1,6 @@
 package com.owlcreativestudio.unify.services;
 
 import android.app.Activity;
-import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -20,7 +18,6 @@ import com.owlcreativestudio.unify.models.FacebookLogin;
 import com.owlcreativestudio.unify.models.FacebookProfile;
 import com.owlcreativestudio.unify.models.UserAccount;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FacebookService {
@@ -91,7 +88,7 @@ public class FacebookService {
                 Exception error = null;
                 boolean requiresRegistration = false;
 
-                if (null == response.getError()) {
+                if (null != response.getError()) {
                     error = response.getError().getException();
                     errorMessage = "An error occurred while obtaining facebook profile information. ";
                 } else {
@@ -100,7 +97,8 @@ public class FacebookService {
                         facebookProfile.setName(object.getString(NAME));
                         facebookProfile.setFirstName(object.getString(FIRST_NAME));
                         facebookProfile.setLastName(object.getString(LAST_NAME));
-                        facebookProfile.setAgeRange(object.getInt(AGE_RANGE));
+//                        age range is a jason serialized object. We don't depend on it to deserialize it and obtain the data at the moment.
+//                        facebookProfile.setAgeRange(object.getInt(AGE_RANGE));
                         facebookProfile.setProfileLink(object.getString(LINK));
                         facebookProfile.setGender(object.getString(GENDER));
                         facebookProfile.setLocale(object.getString(LOCALE));
@@ -111,14 +109,15 @@ public class FacebookService {
                         UserAccount userAccount = sharedPreferencesService.getUserAccount();
 
                         if (null == userAccount) {
-                            userAccount = HttpHelper.PostWithResponse(UrlHelper.getLoginUrl(), new FacebookLogin(facebookProfile.getId()));
+                            UserAccountService userAccountService = new UserAccountService();
+                            userAccount = userAccountService.facebookLogin(new FacebookLogin(facebookProfile.getId()));
                         }
 
                         if (null == userAccount) {
                             requiresRegistration = true;
                             userAccount = new UserAccount();
                             userAccount.setName(facebookProfile.getName());
-                            if (!facebookProfile.getEmail().isEmpty()) {
+                            if (null != facebookProfile.getEmail() && !facebookProfile.getEmail().isEmpty()) {
                                 userAccount.setEmail(facebookProfile.getEmail());
                             }
                         }

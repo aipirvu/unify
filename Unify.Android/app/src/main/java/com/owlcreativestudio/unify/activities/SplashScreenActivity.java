@@ -46,7 +46,7 @@ public class SplashScreenActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent mainIntent = new Intent(SplashScreenActivity.this, redirectActivity.getClass());
+                Intent mainIntent = new Intent(SplashScreenActivity.this, redirectActivity);
                 SplashScreenActivity.this.startActivity(mainIntent);
                 SplashScreenActivity.this.finish();
             }
@@ -57,12 +57,6 @@ public class SplashScreenActivity extends Activity {
     private boolean isLogged() {
         SharedPreferencesService sharedPreferencesService = new SharedPreferencesService(this);
         UserAccount userAccount = sharedPreferencesService.getUserAccount();
-        if (null == userAccount) {
-            return false;
-        }
-        if (userAccount.getName().isEmpty()) {
-            return false;
-        }
-        return true;
+        return null != userAccount && null != userAccount.getName() && !userAccount.getName().isEmpty();
     }
 }

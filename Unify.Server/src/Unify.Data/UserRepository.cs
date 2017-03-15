@@ -14,12 +14,23 @@ namespace Unify.Data
 {
     public class UserRepository : Repository<IUserAccount>, IUserRepository
     {
-        public UserRepository(IMongoClient client) : base(client, "users")
+        public UserRepository(IMongoClient client) : base(client, "userAccounts")
         { }
 
         public IUserAccount GetByEmail(string email)
         {
             var filter = Builders<BsonDocument>.Filter.Eq("Email", email);
+            var bsonDocument = _collection.Find(filter).FirstOrDefault();
+            if (null != bsonDocument)
+            {
+                return (IUserAccount)BsonSerializer.Deserialize<IUserAccount>(bsonDocument);
+            }
+            return null;
+        }
+
+        public IUserAccount GetByFacebookId(string facebookId)
+        {
+            var filter = Builders<BsonDocument>.Filter.Eq("facebookProfile.id", facebookId);
             var bsonDocument = _collection.Find(filter).FirstOrDefault();
             if (null != bsonDocument)
             {

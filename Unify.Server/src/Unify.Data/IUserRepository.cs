@@ -10,5 +10,6 @@ namespace Unify.Data
     public interface IUserRepository : IRepository<IUserAccount>
     {
         IUserAccount GetByEmail(string email);
+        IUserAccount GetByFacebookId(string facebookId);
     }
 }

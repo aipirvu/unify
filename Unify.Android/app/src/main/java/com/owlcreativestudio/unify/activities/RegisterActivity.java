@@ -31,14 +31,16 @@ public class RegisterActivity extends AppCompatActivity {
         this.progressHelper = new ProgressHelper(registerProgress, registerLayout);
 
         this.userAccount = sharedPreferencesService.getUserAccount();
-        if (null != userAccount) {
+        if (null == userAccount) {
             userAccount = new UserAccount();
         }
-        if (!userAccount.getName().isEmpty()) {
+        String name = userAccount.getName();
+        if (null != name && !name.isEmpty()) {
             EditText nameEditText = (EditText) findViewById(R.id.name);
             nameEditText.setText(userAccount.getName());
         }
-        if (!userAccount.getEmail().isEmpty()) {
+        String email = userAccount.getEmail();
+        if (null != email && !email.isEmpty()) {
             EditText emailEditText = (EditText) findViewById(R.id.name);
             emailEditText.setText(userAccount.getEmail());
         }
@@ -61,11 +63,11 @@ public class RegisterActivity extends AppCompatActivity {
             //todo notify user
         }
 
-        if(username.isEmpty()){
+        if (username.isEmpty()) {
 //            todo notify user
         }
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
 //            todo notify user
         }
 

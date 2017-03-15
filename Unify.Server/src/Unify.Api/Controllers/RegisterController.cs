@@ -8,6 +8,7 @@ using Unify.Data;
 using Unify.Common.Interfaces;
 using Unify.Api.ViewModels;
 using System.Net.Http;
+using System.Net;
 
 namespace Unify.Api.Controllers
 {
@@ -16,13 +17,24 @@ namespace Unify.Api.Controllers
     {
         private IUserRepository _userRepository;
 
-        public RegisterController()
-        { }
+        public RegisterController(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
 
         [HttpPost]
         public IActionResult Post([FromBody]IRegister register)
         {
-            return NotFound();
+            IUserAccount userAccount = _userRepository.GetByEmail(register.UserAccount.Email);
+            if (null != userAccount)
+            {
+                return StatusCode((int)HttpStatusCode.Conflict);
+            }
+
+            userAccount = register.UserAccount;
+            userAccount.Password = register.Password;
+            _userRepository.Create(userAccount);
+            return Ok();
         }
     }
 }
