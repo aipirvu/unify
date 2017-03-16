@@ -12,20 +12,22 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.owlcreativestudio.unify.activities.ARActivity;
 import com.owlcreativestudio.unify.activities.RegisterActivity;
-import com.owlcreativestudio.unify.helpers.HttpHelper;
-import com.owlcreativestudio.unify.helpers.UrlHelper;
+import com.owlcreativestudio.unify.helpers.ProgressHelper;
 import com.owlcreativestudio.unify.models.FacebookLogin;
 import com.owlcreativestudio.unify.models.FacebookProfile;
 import com.owlcreativestudio.unify.models.UserAccount;
+import com.owlcreativestudio.unify.tasks.UserFacebookLoginTask;
 
 import org.json.JSONObject;
 
 public class FacebookService {
     private final SharedPreferencesService sharedPreferencesService;
     private final Activity activity;
+    private final ProgressHelper progressHelper;
 
-    public FacebookService(Activity activity) {
+    public FacebookService(Activity activity, ProgressHelper progressHelper) {
         this.activity = activity;
+        this.progressHelper = progressHelper;
         this.sharedPreferencesService = new SharedPreferencesService(activity);
     }
 
@@ -33,6 +35,7 @@ public class FacebookService {
         return new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                progressHelper.showProgress(true);
                 processAccessToken(loginResult.getAccessToken());
             }
 
@@ -46,26 +49,6 @@ public class FacebookService {
             }
         };
     }
-
-//    public static ProfileTracker getProfileTracker(FacebookAccountState facebookAccountState) {
-//        final FacebookAccountState accountState = facebookAccountState;
-//        return new ProfileTracker() {
-//            @Override
-//            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-//                accountState.setProfile(currentProfile);
-//            }
-//        };
-//    }
-
-//    public static AccessTokenTracker getAccessTokenTracker(FacebookAccountState facebookAccountState) {
-//        final FacebookAccountState accountState = facebookAccountState;
-//        return new AccessTokenTracker() {
-//            @Override
-//            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-//                accountState.setAccessToken(currentAccessToken);
-//            }
-//        };
-//    }
 
     private void processAccessToken(final AccessToken accessToken) {
         final String ID = "id";
@@ -84,66 +67,39 @@ public class FacebookService {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 FacebookProfile facebookProfile = new FacebookProfile();
-                String errorMessage = null;
-                Exception error = null;
-                boolean requiresRegistration = false;
 
-                if (null != response.getError()) {
-                    error = response.getError().getException();
-                    errorMessage = "An error occurred while obtaining facebook profile information. ";
-                } else {
-                    try {
-                        facebookProfile.setId(object.getString(ID));
-                        facebookProfile.setName(object.getString(NAME));
-                        facebookProfile.setFirstName(object.getString(FIRST_NAME));
-                        facebookProfile.setLastName(object.getString(LAST_NAME));
-//                        age range is a jason serialized object. We don't depend on it to deserialize it and obtain the data at the moment.
-//                        facebookProfile.setAgeRange(object.getInt(AGE_RANGE));
-                        facebookProfile.setProfileLink(object.getString(LINK));
-                        facebookProfile.setGender(object.getString(GENDER));
-                        facebookProfile.setLocale(object.getString(LOCALE));
-                        facebookProfile.setPictureLink(object.getString(PICTURE));
-                        facebookProfile.setTimezone(object.getInt(TIMEZONE));
-                        facebookProfile.setEmail(object.getString(EMAIL));
-
-                        UserAccount userAccount = sharedPreferencesService.getUserAccount();
-
-                        if (null == userAccount) {
-                            UserAccountService userAccountService = new UserAccountService();
-                            userAccount = userAccountService.facebookLogin(new FacebookLogin(facebookProfile.getId()));
-                        }
-
-                        if (null == userAccount) {
-                            requiresRegistration = true;
-                            userAccount = new UserAccount();
-                            userAccount.setName(facebookProfile.getName());
-                            if (null != facebookProfile.getEmail() && !facebookProfile.getEmail().isEmpty()) {
-                                userAccount.setEmail(facebookProfile.getEmail());
-                            }
-                        }
-
-                        userAccount.setFacebookProfile(facebookProfile);
-
-
-                        if (requiresRegistration) {
-                            activity.startActivity(new Intent(activity, RegisterActivity.class));
-                        } else {
-                            //todo update account;
-                            activity.startActivity(new Intent(activity, ARActivity.class));
-                        }
-                        activity.finish();
-
-                    } catch (Exception ex) {
-                        error = ex;
-                        errorMessage = "An error occurred while obtaining facebook profile information. ";
+                try {
+                    if (null != response.getError()) {
+                        throw response.getError().getException();
                     }
-                }
 
-                if (null != errorMessage) {
-                    //todo display this error message;
-                }
-                if (null != error) {
-                    //todo log this error
+                    facebookProfile.setId(object.getString(ID));
+                    facebookProfile.setName(object.getString(NAME));
+                    facebookProfile.setFirstName(object.getString(FIRST_NAME));
+                    facebookProfile.setLastName(object.getString(LAST_NAME));
+                    facebookProfile.setProfileLink(object.getString(LINK));
+                    facebookProfile.setGender(object.getString(GENDER));
+                    facebookProfile.setLocale(object.getString(LOCALE));
+                    facebookProfile.setPictureLink(object.getString(PICTURE));
+                    facebookProfile.setTimezone(object.getInt(TIMEZONE));
+                    facebookProfile.setEmail(object.getString(EMAIL));
+
+                    UserAccount userAccount = sharedPreferencesService.getUserAccount();
+
+                    Intent startAR = new Intent(activity, ARActivity.class);
+                    Intent startRegister = new Intent(activity, RegisterActivity.class);
+
+                    if (null == userAccount) {
+                        UserFacebookLoginTask userTask = new UserFacebookLoginTask(activity, progressHelper, facebookProfile, startRegister, startAR);
+                        userTask.execute();
+                    } else {
+                        userAccount.setFacebookProfile(facebookProfile);
+                        activity.startActivity(startAR);
+                        activity.finish();
+                    }
+                } catch (Exception ex) {
+                    //todo display error message;
+                    progressHelper.showProgress(false);
                 }
             }
         });

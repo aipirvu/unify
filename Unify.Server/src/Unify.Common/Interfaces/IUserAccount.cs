@@ -8,7 +8,7 @@ namespace Unify.Common.Interfaces
 {
     public interface IUserAccount : IUnifyEntity
     {
-        string Username { get; set; }
+        string DisplayName { get; set; }
         string Password { get; set; }
         string Salt { get; set; }
         string Email { get; set; }

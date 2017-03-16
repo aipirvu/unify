@@ -32,6 +32,7 @@ public class SplashScreenActivity extends Activity {
             redirectActivity = LoginActivity.class;
         }
 
+
         try {
             PackageInfo info = getPackageManager().getPackageInfo("com.owlcreativestudio.unify", PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
@@ -40,7 +41,6 @@ public class SplashScreenActivity extends Activity {
                 Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (Exception ex) {
-
         }
 
         new Handler().postDelayed(new Runnable() {
@@ -56,7 +56,8 @@ public class SplashScreenActivity extends Activity {
 
     private boolean isLogged() {
         SharedPreferencesService sharedPreferencesService = new SharedPreferencesService(this);
+        sharedPreferencesService.clearUserAccount();
         UserAccount userAccount = sharedPreferencesService.getUserAccount();
-        return null != userAccount && null != userAccount.getName() && !userAccount.getName().isEmpty();
+        return null != userAccount && null != userAccount.getDisplayName() && !userAccount.getDisplayName().isEmpty();
     }
 }

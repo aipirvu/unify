@@ -13,7 +13,7 @@ namespace Unify.Common.Entities
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-        public string Username { get; set; }
+        public string DisplayName { get; set; }
         public string Password { get; set; }
         public string Salt { get; set; }
         public string Email { get; set; }

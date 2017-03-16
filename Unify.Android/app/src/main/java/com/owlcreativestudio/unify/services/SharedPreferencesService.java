@@ -17,9 +17,9 @@ public class SharedPreferencesService {
     }
 
     public UserAccount getUserAccount() {
-        SharedPreferences sharedPreferences = this.activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.activity.getSharedPreferences(Constants.SharedPreferences.APPLICATION_SHARED, Context.MODE_PRIVATE);
         String jsonObject = "";
-        sharedPreferences.getString(Constants.SharedPreferences.USER_ACCOUNT, jsonObject);
+        jsonObject = sharedPreferences.getString(Constants.SharedPreferences.USER_ACCOUNT, jsonObject);
 
         if (jsonObject.isEmpty()) {
             return null;
@@ -28,8 +28,16 @@ public class SharedPreferencesService {
     }
 
     public void setUserAccount(UserAccount userAccount) {
-        SharedPreferences sharedPreferences = this.activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = this.activity.getSharedPreferences(Constants.SharedPreferences.APPLICATION_SHARED, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(Constants.SharedPreferences.USER_ACCOUNT, serializer.toJson(userAccount));
+        editor.commit();
+    }
+
+    public void clearUserAccount() {
+        SharedPreferences sharedPreferences = this.activity.getSharedPreferences(Constants.SharedPreferences.APPLICATION_SHARED, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(Constants.SharedPreferences.USER_ACCOUNT);
+        editor.commit();
     }
 }

@@ -33,7 +33,7 @@ namespace Unify.Api.Controllers
             {
                 return Forbid();
             }
-            return Ok();
+            return Ok(user);
         }
 
         [HttpPost("facebook")]

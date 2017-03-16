@@ -16,7 +16,6 @@ import com.owlcreativestudio.unify.tasks.UserRegisterTask;
 
 public class RegisterActivity extends AppCompatActivity {
     private ProgressHelper progressHelper;
-    private SharedPreferencesService sharedPreferencesService;
     private UserAccount userAccount;
 
     @Override
@@ -24,7 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        this.sharedPreferencesService = new SharedPreferencesService(this);
+        SharedPreferencesService sharedPreferencesService = new SharedPreferencesService(this);
 
         View registerLayout = findViewById(R.id.register_form);
         View registerProgress = findViewById(R.id.login_progress);
@@ -34,50 +33,43 @@ public class RegisterActivity extends AppCompatActivity {
         if (null == userAccount) {
             userAccount = new UserAccount();
         }
-        String name = userAccount.getName();
-        if (null != name && !name.isEmpty()) {
-            EditText nameEditText = (EditText) findViewById(R.id.name);
-            nameEditText.setText(userAccount.getName());
+        String displayName = userAccount.getDisplayName();
+        if (null != displayName && !displayName.isEmpty()) {
+            EditText displayNameEditText = (EditText) findViewById(R.id.displayName);
+            displayNameEditText.setText(userAccount.getDisplayName());
         }
         String email = userAccount.getEmail();
         if (null != email && !email.isEmpty()) {
-            EditText emailEditText = (EditText) findViewById(R.id.name);
+            EditText emailEditText = (EditText) findViewById(R.id.email);
             emailEditText.setText(userAccount.getEmail());
         }
     }
 
     public void register(View view) {
-        EditText nameEditText = (EditText) findViewById(R.id.name);
-        EditText usernameEditText = (EditText) findViewById(R.id.username);
+        EditText displayNameEditText = (EditText) findViewById(R.id.displayName);
         EditText emailEditText = (EditText) findViewById(R.id.email);
         EditText passwordEditText = (EditText) findViewById(R.id.password);
         EditText confirmPasswordEditText = (EditText) findViewById(R.id.confirm_password);
 
-        String name = nameEditText.getText().toString();
-        String username = usernameEditText.getText().toString();
+        String displayName = displayNameEditText.getText().toString();
         String email = emailEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         String confirmationPassword = confirmPasswordEditText.getText().toString();
 
-        if (name.isEmpty()) {
+        if (displayName.isEmpty()) {
             //todo notify user
         }
 
-        if (username.isEmpty()) {
-//            todo notify user
-        }
-
         if (email.isEmpty()) {
-//            todo notify user
+            //todo notify user
         }
 
         if (!password.equals(confirmationPassword)) {
-//            todo notify user
+            //todo notify user
         }
 
         userAccount.setEmail(email);
-        userAccount.setName(name);
-        userAccount.setUsername(username);
+        userAccount.setDisplayName(displayName);
 
         Register register = new Register();
         register.setUserAccount(userAccount);

@@ -2,9 +2,8 @@ package com.owlcreativestudio.unify.models;
 
 public class UserAccount {
     String id = "";
-    String username = "";
+    String displayName = "";
     String email = "";
-    String name = "";
     String pictureLink = "";
     FacebookProfile facebookProfile;
 
@@ -16,12 +15,12 @@ public class UserAccount {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public String getEmail() {
@@ -46,13 +45,5 @@ public class UserAccount {
 
     public void setFacebookProfile(FacebookProfile facebookProfile) {
         this.facebookProfile = facebookProfile;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

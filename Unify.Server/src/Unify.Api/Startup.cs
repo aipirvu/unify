@@ -13,6 +13,7 @@ using Unify.Common.Entities;
 using MongoDB.Driver;
 using Unify.Api.CustomCoverters;
 using MongoDB.Bson.Serialization;
+using Unify.Api.ViewModels;
 
 namespace Unify.Api
 {
@@ -79,6 +80,7 @@ namespace Unify.Api
         public void ConfigureMongoDBClassMap()
         {
             BsonClassMap.RegisterClassMap<UserAccount>();
+            BsonClassMap.RegisterClassMap<FacebookProfile>();
         }
 
     }

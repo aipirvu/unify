@@ -14,21 +14,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.AppLogin;
 import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
-import com.owlcreativestudio.unify.tasks.UserLoginTask;
+import com.owlcreativestudio.unify.tasks.UserAppLoginTask;
 
 import java.util.Arrays;
 
 
-/**
- * A login screen that offers login via email/password.
- */
 public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_SERVICE = 0;
     private static final int REQUEST_FINE_LOCATION = 1;
@@ -38,46 +34,20 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private FacebookService facebookService;
 
-    public void signIn(View view) {
-        EditText emailEditText = (EditText) findViewById(R.id.email);
-        EditText passwordEditText = (EditText) findViewById(R.id.password);
-
-        String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
-        AppLogin login = new AppLogin();
-        login.setEmail(email);
-        login.setPassword(password);
-
-        Intent intent = new Intent(this, ARActivity.class);
-
-        progressHelper.showProgress(true);
-        UserLoginTask loginTask = new UserLoginTask(this, progressHelper, login, intent);
-        loginTask.execute();
-    }
-
-    public void register(View view) {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //setup services
-        this.facebookService = new FacebookService(this);
-
-        checkFacebookLoginToken();
-
-        setupFacebookLogin();
-
         View loginLayout = findViewById(R.id.login_layout);
         View loginProgress = findViewById(R.id.login_progress);
         masterLayout = findViewById(R.id.master_layout);
 
-
         progressHelper = new ProgressHelper(loginProgress, loginLayout);
+
+        this.facebookService = new FacebookService(this, progressHelper);
+//        checkFacebookLoginToken();
+        setupFacebookLogin();
 
     }
 
@@ -102,6 +72,27 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    public void signIn(View view) {
+        EditText emailEditText = (EditText) findViewById(R.id.email);
+        EditText passwordEditText = (EditText) findViewById(R.id.password);
+
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        AppLogin login = new AppLogin();
+        login.setEmail(email);
+        login.setPassword(password);
+
+        Intent intent = new Intent(this, ARActivity.class);
+
+        progressHelper.showProgress(true);
+        UserAppLoginTask loginTask = new UserAppLoginTask(this, progressHelper, login, intent);
+        loginTask.execute();
+    }
+
+    public void register(View view) {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
 
     private void setupFacebookLogin() {
         callbackManager = CallbackManager.Factory.create();
@@ -111,12 +102,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /* CHECK EXISTECE OF ACCESS TOKENS */
-    private void checkFacebookLoginToken() {
-        AccessToken facebookToken = AccessToken.getCurrentAccessToken();
-        if (null != facebookToken && !facebookToken.isExpired()) {
-//            advanceToARActivity();
-        }
-    }
+//    private void checkFacebookLoginToken() {
+//        AccessToken facebookToken = AccessToken.getCurrentAccessToken();
+//        if (null != facebookToken && !facebookToken.isExpired()) {
+////            advanceToARActivity();
+//        }
+//    }
 
     /* CHECK ACCESS TO SERVICES */
     private boolean hasCameraAccess() {
@@ -167,8 +158,8 @@ public class LoginActivity extends AppCompatActivity {
         return false;
     }
 
-    private void advanceToARActivity() {
-        startActivity(new Intent(this, ARActivity.class));
-        finish();
-    }
+//    private void advanceToARActivity() {
+//        startActivity(new Intent(this, ARActivity.class));
+//        finish();
+//    }
 }
