@@ -25,6 +25,16 @@
 
     <!--some settings will go here. to be updated    -->
 
+    <LinearLayout
+        android:id="@+id/details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:background="#FFFFFF"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/controls_layout"
         android:layout_width="match_parent"
@@ -34,21 +44,22 @@
             android:id="@+id/settings_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="30dp"
             android:layout_weight="1"
             android:onClick="settings"
-            app:srcCompat="@android:drawable/ic_menu_preferences"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="30dp" />
+            app:srcCompat="@android:drawable/ic_menu_preferences" />
+
         <ImageView
             android:id="@+id/sign_out_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="60dp"
             android:layout_weight="1"
             android:onClick="settings"
-            app:srcCompat="@android:drawable/ic_menu_preferences"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="60dp" />
+            app:srcCompat="@android:drawable/ic_menu_preferences" />
     </RelativeLayout>
 </FrameLayout>

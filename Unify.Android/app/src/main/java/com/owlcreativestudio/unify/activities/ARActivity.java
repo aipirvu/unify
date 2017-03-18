@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.AdjacentPerson;
@@ -24,6 +25,7 @@ import java.util.List;
 
 public class ARActivity extends AppCompatActivity {
     FrameLayout contentLayout;
+    LinearLayout detailsLayout;
     private boolean isVisible;
 
     private final Handler mHideHandler = new Handler();
@@ -93,12 +95,13 @@ public class ARActivity extends AppCompatActivity {
         masterLayout = findViewById(R.id.master_layout);
         cameraLayout = (FrameLayout) findViewById(R.id.camera_layout);
         contentLayout = (FrameLayout) findViewById(R.id.content_layout);
+        detailsLayout = (LinearLayout) findViewById(R.id.details_layout);
         controlsLayout = findViewById(R.id.controls_layout);
 
         isVisible = true;
 
         //set services
-        arService = new ARService(this, contentLayout, 10, 50);
+        arService = new ARService(this, contentLayout, detailsLayout, 10, 50);
         cameraService = new CameraService(this, cameraLayout, arService);
         locationService = new LocationService(this, arService);
         positionService = new PositionService(this, arService);
@@ -211,7 +214,7 @@ public class ARActivity extends AppCompatActivity {
 //        location.setLongitude(45);
 
         AdjacentPerson adjacentPerson = new AdjacentPerson();
-        adjacentPerson.setName("Qutory");
+        adjacentPerson.setDisplayName("Qutory");
         adjacentPerson.setImageUrl("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
         adjacentPerson.setId("" + Math.random());
         adjacentPerson.setLocation(location);
@@ -228,7 +231,7 @@ public class ARActivity extends AppCompatActivity {
 //        location.setLongitude(-45);
 
         AdjacentPerson adjacentPerson = new AdjacentPerson();
-        adjacentPerson.setName("ADL");
+        adjacentPerson.setDisplayName("ADL");
         adjacentPerson.setImageUrl("https://scontent.fotp3-2.fna.fbcdn.net/v/t1.0-1/p160x160/14463131_1174090729337640_5968235094959303848_n.jpg?oh=6d524d8f0a743f059a46d4b0b59766a5&oe=5966C6A6");
         adjacentPerson.setId("" + Math.random());
         adjacentPerson.setLocation(location);
@@ -243,7 +246,7 @@ public class ARActivity extends AppCompatActivity {
         location.setLongitude(45);
 
         AdjacentPerson adjacentPerson = new AdjacentPerson();
-        adjacentPerson.setName("Qutory");
+        adjacentPerson.setDisplayName("Qutory");
         adjacentPerson.setImageUrl("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
         adjacentPerson.setId("" + Math.random());
         adjacentPerson.setLocation(location);

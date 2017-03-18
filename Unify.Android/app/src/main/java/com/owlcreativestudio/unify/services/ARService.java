@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.owlcreativestudio.unify.tasks.DownloadImageTask;
@@ -24,25 +25,31 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private final double MINIMUM_DISTANCE;
     private final double MINIMUM_ICON_SIZE_MODIFIER;
     private final double MAXIMUM_ICON_SIZE_MODIFIER;
-    private final FrameLayout LAYOUT;
+    private final FrameLayout PEOPLE_LAYOUT;
+    private final LinearLayout DETAILS_LAYOUT;
     private final Context CONTEXT;
 
     private List<AdjacentPerson> adjacentPeople = new ArrayList<>();
     private HashMap<String, FrameLayout> adjacentObjects = new HashMap<>();
     private ARState arState;
+    private boolean isDetailsVisible;
 
     private TextView logView;
     private double previousProcessedXY;
 
-    public ARService(Context context, FrameLayout layout, double minimumDistance, double maximumDistance) {
+    public ARService(Context context, FrameLayout peopleLayout, LinearLayout detailsLayout, double minimumDistance, double maximumDistance) {
         CONTEXT = context;
-        LAYOUT = layout;
+        PEOPLE_LAYOUT = peopleLayout;
+        DETAILS_LAYOUT = detailsLayout;
         MAXIMUM_DISTANCE = maximumDistance;
         MINIMUM_DISTANCE = minimumDistance;
 
         MINIMUM_ICON_SIZE_MODIFIER = 0.3;
         MAXIMUM_ICON_SIZE_MODIFIER = 1.0;
         arState = new ARState();
+
+        DETAILS_LAYOUT.setVisibility(View.GONE);
+        isDetailsVisible = false;
     }
 
     public ARState getArState() {
@@ -62,12 +69,12 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     public void setAdjacentPeople(List<AdjacentPerson> adjacentPeople) {
         HashMap<String, FrameLayout> adjacentObjects = new HashMap<>();
 
-        LAYOUT.removeAllViews();
+        PEOPLE_LAYOUT.removeAllViews();
 
         for (AdjacentPerson adjacentPerson : adjacentPeople) {
             FrameLayout adjacentObject = getAdjacentObject(adjacentPerson);
             adjacentObjects.put(adjacentPerson.getId(), adjacentObject);
-            LAYOUT.addView(adjacentObject);
+            PEOPLE_LAYOUT.addView(adjacentObject);
             adjacentObject.setVisibility(View.GONE);
         }
 
@@ -75,7 +82,7 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         this.adjacentObjects = adjacentObjects;
     }
 
-    private FrameLayout getAdjacentObject(AdjacentPerson adjacentPerson) {
+    private FrameLayout getAdjacentObject(final AdjacentPerson adjacentPerson) {
         FrameLayout.LayoutParams pictureParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         ImageView pictureView = new ImageView(CONTEXT);
         pictureView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -87,7 +94,7 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         FrameLayout.LayoutParams textParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         TextView nameView = new TextView(CONTEXT);
         nameView.setPadding(10, 10, 10, 10);
-        nameView.setText(adjacentPerson.getName());
+        nameView.setText(adjacentPerson.getDisplayName());
         nameView.setBackgroundColor(Color.BLACK);
         nameView.setTextColor(Color.WHITE);
         nameView.setLayoutParams(textParams);
@@ -96,7 +103,12 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         personLayout.setBackgroundColor(Color.GRAY);
         personLayout.addView(pictureView);
         personLayout.addView(nameView);
-
+        personLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDetails(adjacentPerson);
+            }
+        });
         return personLayout;
     }
 
@@ -134,6 +146,10 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private void processScene() {
+        if (isDetailsVisible) {
+            return;
+        }
+
         if (arState.getLocation().getLatitude() == 0 && arState.getLocation().getLongitude() == 0) {
             log("Waiting for location...");
             return;
@@ -244,7 +260,7 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
             logView.setTextColor(Color.WHITE);
             logView.setPadding(10, 10, 10, 10);
 
-            LAYOUT.addView(logView);
+            PEOPLE_LAYOUT.addView(logView);
         }
 
         logView.setText(message);
@@ -266,5 +282,27 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         logMessage += arState.getLocation().getElevation();
 
         return logMessage;
+    }
+
+    /* DETAILS LAYOUT */
+    private void showDetails(AdjacentPerson adjacentPerson) {
+        PEOPLE_LAYOUT.removeAllViews();
+        DETAILS_LAYOUT.removeAllViews();
+
+        TextView name = new TextView(CONTEXT);
+        name.setText(adjacentPerson.getDisplayName());
+
+        DETAILS_LAYOUT.addView(name);
+
+        DETAILS_LAYOUT.setVisibility(View.VISIBLE);
+        isDetailsVisible = true;
+
+        DETAILS_LAYOUT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DETAILS_LAYOUT.setVisibility(View.GONE);
+                isDetailsVisible = false;
+            }
+        });
     }
 }

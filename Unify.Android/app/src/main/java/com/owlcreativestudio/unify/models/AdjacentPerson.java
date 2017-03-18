@@ -2,7 +2,7 @@ package com.owlcreativestudio.unify.models;
 
 public class AdjacentPerson {
     private String id;
-    private String name;
+    private String displayName;
     private UnifyLocation location;
     private String imageUrl;
     private FacebookProfile facebookProfile;
@@ -17,12 +17,12 @@ public class AdjacentPerson {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDisplayName() {
+        return displayName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public UnifyLocation getLocation() {
