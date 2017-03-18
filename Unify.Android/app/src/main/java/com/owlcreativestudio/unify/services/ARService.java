@@ -2,6 +2,8 @@ package com.owlcreativestudio.unify.services;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -9,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.owlcreativestudio.unify.helpers.MetricsHelper;
 import com.owlcreativestudio.unify.tasks.DownloadImageTask;
 import com.owlcreativestudio.unify.interfaces.ARStateGetSetter;
 import com.owlcreativestudio.unify.interfaces.AdjacentPeopleSetter;
@@ -32,7 +35,6 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     private List<AdjacentPerson> adjacentPeople = new ArrayList<>();
     private HashMap<String, FrameLayout> adjacentObjects = new HashMap<>();
     private ARState arState;
-    private boolean isDetailsVisible;
 
     private TextView logView;
     private double previousProcessedXY;
@@ -49,7 +51,6 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
         arState = new ARState();
 
         DETAILS_LAYOUT.setVisibility(View.GONE);
-        isDetailsVisible = false;
     }
 
     public ARState getArState() {
@@ -146,10 +147,6 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
     }
 
     private void processScene() {
-        if (isDetailsVisible) {
-            return;
-        }
-
         if (arState.getLocation().getLatitude() == 0 && arState.getLocation().getLongitude() == 0) {
             log("Waiting for location...");
             return;
@@ -286,22 +283,69 @@ public class ARService implements ARStateGetSetter, AdjacentPeopleSetter {
 
     /* DETAILS LAYOUT */
     private void showDetails(AdjacentPerson adjacentPerson) {
-        PEOPLE_LAYOUT.removeAllViews();
+        PEOPLE_LAYOUT.setVisibility(View.GONE);
         DETAILS_LAYOUT.removeAllViews();
+
+        int marginTop = MetricsHelper.getPixels(20, CONTEXT);
+        int labelPadding = MetricsHelper.getPixels(5, CONTEXT);
+
+        LinearLayout.LayoutParams appLabelParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        TextView appLabel = new TextView(CONTEXT);
+        appLabel.setText("Unify app");
+        appLabel.setTextAppearance(CONTEXT, android.R.style.TextAppearance_Large);
+        appLabel.setTypeface(null, Typeface.BOLD);
+        appLabel.setLayoutParams(appLabelParams);
+        appLabel.setPadding(labelPadding, labelPadding, 0, labelPadding);
+        appLabel.setBackgroundColor(Color.parseColor("#FFA02D"));
+        appLabel.setTextColor(Color.WHITE);
+        DETAILS_LAYOUT.addView(appLabel);
+
+        if (null != adjacentPerson.getImageUrl()) {
+            int pictureSize = MetricsHelper.getPixels(150, CONTEXT);
+            LinearLayout.LayoutParams pictureParams = new LinearLayout.LayoutParams(pictureSize, pictureSize);
+            pictureParams.setMargins(0, marginTop, 0, 0);
+            pictureParams.gravity = Gravity.CENTER_HORIZONTAL;
+
+            ImageView pictureView = new ImageView(CONTEXT);
+            pictureView.setScaleType(ImageView.ScaleType.FIT_XY);
+            pictureView.setLayoutParams(pictureParams);
+
+            new DownloadImageTask(pictureView).execute(adjacentPerson.getImageUrl());
+            DETAILS_LAYOUT.addView(pictureView);
+        }
+
+
+        LinearLayout.LayoutParams nameLabelParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        nameLabelParams.setMargins(0, marginTop, 0, 0);
+
+        TextView nameLabel = new TextView(CONTEXT);
+        nameLabel.setText("NAME");
+        nameLabel.setTextAppearance(CONTEXT, android.R.style.TextAppearance_Large);
+        nameLabel.setTypeface(null, Typeface.BOLD);
+        nameLabel.setGravity(Gravity.CENTER);
+        nameLabel.setLayoutParams(nameLabelParams);
+        DETAILS_LAYOUT.addView(nameLabel);
+
+
+        LinearLayout.LayoutParams nameParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        nameParams.gravity = Gravity.CENTER_HORIZONTAL;
 
         TextView name = new TextView(CONTEXT);
         name.setText(adjacentPerson.getDisplayName());
-
+        name.setTextAppearance(CONTEXT, android.R.style.TextAppearance_Medium);
+        name.setGravity(Gravity.CENTER);
+        name.setLayoutParams(nameParams);
         DETAILS_LAYOUT.addView(name);
 
+
         DETAILS_LAYOUT.setVisibility(View.VISIBLE);
-        isDetailsVisible = true;
 
         DETAILS_LAYOUT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DETAILS_LAYOUT.setVisibility(View.GONE);
-                isDetailsVisible = false;
+                PEOPLE_LAYOUT.setVisibility(View.VISIBLE);
             }
         });
     }

@@ -56,7 +56,7 @@ public class SplashScreenActivity extends Activity {
 
     private boolean isLogged() {
         SharedPreferencesService sharedPreferencesService = new SharedPreferencesService(this);
-        sharedPreferencesService.clearUserAccount();
+//        sharedPreferencesService.clearUserAccount();
         UserAccount userAccount = sharedPreferencesService.getUserAccount();
         return null != userAccount && null != userAccount.getDisplayName() && !userAccount.getDisplayName().isEmpty();
     }
