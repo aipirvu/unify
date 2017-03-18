@@ -26,27 +26,23 @@ public class UserFacebookLoginTask extends AsyncTask<Void, Void, Boolean> {
         this.startRegisterIntent = startRegisterIntent;
         this.startARIntent = startARIntent;
         this.progressHelper = progressHelper;
-        this.userAccountService = new UserAccountService();
+        this.userAccountService = new UserAccountService(activity);
         this.sharedPreferencesService = new SharedPreferencesService(activity);
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
         boolean successful = true;
-        try {
-            UserAccount userAccount = userAccountService.facebookLogin(new FacebookLogin(facebookProfile.getId()));
-            if (null == userAccount) {
-                successful = false;
-                userAccount = new UserAccount();
-                userAccount.setFacebookProfile(facebookProfile);
-                userAccount.setDisplayName(facebookProfile.getName());
-                if (null != facebookProfile.getEmail() && !facebookProfile.getEmail().isEmpty()) {
-                    userAccount.setEmail(facebookProfile.getEmail());
-                }
+        UserAccount userAccount = userAccountService.facebookLogin(new FacebookLogin(facebookProfile.getId()));
+        if (null == userAccount) {
+            successful = false;
+            userAccount = new UserAccount();
+            userAccount.setFacebookProfile(facebookProfile);
+            userAccount.setDisplayName(facebookProfile.getName());
+            if (null != facebookProfile.getEmail() && !facebookProfile.getEmail().isEmpty()) {
+                userAccount.setEmail(facebookProfile.getEmail());
             }
             this.sharedPreferencesService.setUserAccount(userAccount);
-        } catch (Exception ex) {
-            successful = false;
         }
         return successful;
     }

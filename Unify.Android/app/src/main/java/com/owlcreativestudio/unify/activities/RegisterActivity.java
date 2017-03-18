@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.owlcreativestudio.unify.R;
+import com.owlcreativestudio.unify.helpers.AlertHelper;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
 import com.owlcreativestudio.unify.models.Register;
 import com.owlcreativestudio.unify.models.UserAccount;
@@ -57,29 +58,27 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmationPassword = confirmPasswordEditText.getText().toString();
 
         if (displayName.isEmpty()) {
-            //todo notify user
+            AlertHelper.show(this, "Field required", "Display name is not set.");
+        } else if (email.isEmpty()) {
+            AlertHelper.show(this, "Field required", "Email is not set.");
+        } else if (password.isEmpty()) {
+            AlertHelper.show(this, "Field required", "Password is not set.");
+        } else if (!password.equals(confirmationPassword)) {
+            AlertHelper.show(this, "Field required", "Password fields do not match.");
+        } else {
+            userAccount.setEmail(email);
+            userAccount.setDisplayName(displayName);
+
+            Register register = new Register();
+            register.setUserAccount(userAccount);
+            register.setPassword(password);
+
+            Intent intent = new Intent(this, ARActivity.class);
+
+
+            this.progressHelper.showProgress(true);
+            UserRegisterTask registerTask = new UserRegisterTask(this, this.progressHelper, register, intent);
+            registerTask.execute();
         }
-
-        if (email.isEmpty()) {
-            //todo notify user
-        }
-
-        if (!password.equals(confirmationPassword)) {
-            //todo notify user
-        }
-
-        userAccount.setEmail(email);
-        userAccount.setDisplayName(displayName);
-
-        Register register = new Register();
-        register.setUserAccount(userAccount);
-        register.setPassword(password);
-
-        Intent intent = new Intent(this, ARActivity.class);
-
-
-        this.progressHelper.showProgress(true);
-        UserRegisterTask registerTask = new UserRegisterTask(this, this.progressHelper, register, intent);
-        registerTask.execute();
     }
 }

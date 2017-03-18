@@ -1,7 +1,9 @@
 package com.owlcreativestudio.unify.services;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.owlcreativestudio.unify.helpers.AlertHelper;
 import com.owlcreativestudio.unify.helpers.HttpHelper;
 import com.owlcreativestudio.unify.helpers.UrlHelper;
 import com.owlcreativestudio.unify.models.AppLogin;
@@ -10,13 +12,18 @@ import com.owlcreativestudio.unify.models.Register;
 import com.owlcreativestudio.unify.models.UserAccount;
 
 public class UserAccountService {
+    private final Context context;
+
+    public UserAccountService(Context context) {
+        this.context = context;
+    }
+
     public UserAccount appLogin(AppLogin login) {
         UserAccount userAccount = null;
         try {
             userAccount = HttpHelper.postWithResponse(UrlHelper.getAppLoginUrl(), login, UserAccount.class);
         } catch (Exception ex) {
-            //todo notify user
-            Log.d("HTTP", ex.getMessage());
+            handleError(ex);
         }
 
         return userAccount;
@@ -27,23 +34,33 @@ public class UserAccountService {
         try {
             userAccount = HttpHelper.postWithResponse(UrlHelper.getFacebookLoginUrl(), login, UserAccount.class);
         } catch (Exception ex) {
-            //todo notify user
-            Log.d("HTTP", ex.getMessage());
+            handleError(ex);
         }
 
         return userAccount;
     }
 
-    public String register(Register register) {
-        String message = "";
+    public boolean register(Register register) {
         try {
             HttpHelper.post(UrlHelper.getRegisterUrl(), register);
+            return true;
         } catch (Exception ex) {
-            message = ex.getMessage();
             if (ex.getMessage().contains("409")) {
-                message = "The email address is already used.";
+                handleError(ex, "The email address is already used.");
+            } else {
+                handleError(ex);
             }
         }
-        return  message;
+        return false;
+    }
+
+    private void handleError(Exception ex) {
+        AlertHelper.show(context, "Error", "A connection error occurred");
+        //todo log exception;
+    }
+
+    private void handleError(Exception ex, String message) {
+        AlertHelper.show(context, "Error", message);
+        //todo log exception;
     }
 }

@@ -3,6 +3,7 @@ package com.owlcreativestudio.unify.activities;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -10,13 +11,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.owlcreativestudio.unify.R;
+import com.owlcreativestudio.unify.helpers.AlertHelper;
 import com.owlcreativestudio.unify.models.AppLogin;
 import com.owlcreativestudio.unify.services.FacebookService;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
@@ -46,24 +47,27 @@ public class LoginActivity extends AppCompatActivity {
         progressHelper = new ProgressHelper(loginProgress, loginLayout);
 
         this.facebookService = new FacebookService(this, progressHelper);
-//        checkFacebookLoginToken();
         setupFacebookLogin();
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        DialogInterface.OnClickListener closeOnClick = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        };
+
         if (!hasHardwareCamera(this)) {
-            Log.d("ERROR", "No camera detected");
+            AlertHelper.show(this, "Requirement unfulfilled", "The application requires the phone to have a camera.", closeOnClick);
         }
         if (!hasCameraAccess()) {
-            Log.d("ERROR", "Camera access required");
+            AlertHelper.show(this, "Requirement unfulfilled", "The application requires access to phone's camera.", closeOnClick);
         }
         if (!hasGPSAccess()) {
-            Log.d("ERROR", "Location access required");
+            AlertHelper.show(this, "Requirement unfulfilled", "The application requires access to phone's location", closeOnClick);
         }
-        //todo display a warning and close the application
     }
 
     @Override

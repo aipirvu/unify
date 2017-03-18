@@ -23,21 +23,17 @@ public class UserAppLoginTask extends AsyncTask<Void, Void, Boolean> {
         this.login = login;
         this.startARIntent = startARIntent;
         this.progressHelper = progressHelper;
-        this.userAccountService = new UserAccountService();
+        this.userAccountService = new UserAccountService(activity);
         this.sharedPreferencesService = new SharedPreferencesService(activity);
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        try {
-            UserAccount userAccount = userAccountService.appLogin(login);
-            if (null == userAccount) {
-                return false;
-            }
-            this.sharedPreferencesService.setUserAccount(userAccount);
-        } catch (Exception ex) {
+        UserAccount userAccount = userAccountService.appLogin(login);
+        if (null == userAccount) {
             return false;
         }
+        this.sharedPreferencesService.setUserAccount(userAccount);
         return true;
     }
 

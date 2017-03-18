@@ -3,7 +3,6 @@ package com.owlcreativestudio.unify.models;
 public class FacebookProfile {
     private String id = "";
     private String name = "";
-    //could get cover;
     private String firstName = "";
     private String lastName = "";
     private int ageRange;
@@ -12,8 +11,6 @@ public class FacebookProfile {
     private String locale = "";
     private String pictureLink = "";
     private int timezone;
-    //could get updated_time
-    //could get verified
     private String email = "";
 
     public String getId() {

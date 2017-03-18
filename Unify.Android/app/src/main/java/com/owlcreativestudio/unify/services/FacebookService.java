@@ -1,6 +1,7 @@
 package com.owlcreativestudio.unify.services;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -12,6 +13,7 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.owlcreativestudio.unify.activities.ARActivity;
 import com.owlcreativestudio.unify.activities.RegisterActivity;
+import com.owlcreativestudio.unify.helpers.AlertHelper;
 import com.owlcreativestudio.unify.helpers.ProgressHelper;
 import com.owlcreativestudio.unify.models.FacebookLogin;
 import com.owlcreativestudio.unify.models.FacebookProfile;
@@ -45,7 +47,8 @@ public class FacebookService {
 
             @Override
             public void onError(FacebookException error) {
-                //todo notify user
+                AlertHelper.show(activity, "Error", "An error occurred while connecting to facebook.");
+                //todo log error message;
             }
         };
     }
@@ -98,8 +101,14 @@ public class FacebookService {
                         activity.finish();
                     }
                 } catch (Exception ex) {
-                    //todo display error message;
-                    progressHelper.showProgress(false);
+                    DialogInterface.OnClickListener okListener = new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            progressHelper.showProgress(false);
+                            //todo disconnect from facebook or clear token?
+                        }
+                    };
+                    AlertHelper.show(activity, "Error", "An error occurred while connecting to facebook.", okListener);
                 }
             }
         });
