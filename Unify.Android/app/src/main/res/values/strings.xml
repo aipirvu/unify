@@ -103,4 +103,8 @@
     <string name="register">Register</string>
     <string name="displayName">Name</string>
     <string name="facebook">facebook</string>
+    <string name="availability_switch">Available</string>
+    <string name="connect_linkedin">Connect with LinkedIn</string>
+    <string name="connect_twitter">Connect with Twitter</string>
+    <string name="connect_instagram">Connect with Instagram</string>
 </resources>
