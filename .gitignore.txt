@@ -9,23 +9,20 @@
 *.ear
 
 # Intellij
-.idea/
+Unify.Android/.idea/
 *.iml
 *.iws
 
 # Visual Studio
-.vs/
-bin/
+Unify.Server/.vs/
+Unify.Server/src/Unify.Api/bin/
+Unify.Server/src/Unify.Common/bin/
+Unify.Server/src/Unify.Data/bin/
 
-# Maven
-logs/
-target/
-web.api/target/
-web/target
-database/target
-data/target
-*.original
-classes/
+# Gradle
+Unify.Android/.gradle/
+Unify.Android/build/
+Unify.Android/linkedin-sdk/build/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
