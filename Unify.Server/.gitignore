@@ -1,0 +1,5 @@
+# Visual Studio
+Unify.Server/.vs/
+Unify.Server/src/Unify.Api/bin
+Unify.Server/src/Unify.Common/bin
+Unify.Server/src/Unify.Data/bin
