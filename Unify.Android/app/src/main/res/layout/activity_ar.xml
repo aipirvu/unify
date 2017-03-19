@@ -18,7 +18,7 @@
 
     <!--ar content will be added to this frame layout-->
     <FrameLayout
-        android:id="@+id/content_layout"
+        android:id="@+id/ar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -128,7 +128,19 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/profiles_navigation_layout"
+        android:id="@+id/linkedin_profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/twitter_profile_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/navigation_profiles_layout"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -156,7 +168,7 @@
             android:layout_height="50dp"
             android:layout_marginStart="25dp"
             android:layout_marginTop="10dp"
-            app:srcCompat="@mipmap/unify_app_ogo" />
+            app:srcCompat="@mipmap/unify_app_logo" />
 
         <ImageView
             android:id="@+id/facebookLogo"

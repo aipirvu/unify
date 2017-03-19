@@ -14,22 +14,21 @@ import android.widget.LinearLayout;
 
 import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.AdjacentPerson;
+import com.owlcreativestudio.unify.models.FacebookProfile;
 import com.owlcreativestudio.unify.models.UnifyLocation;
 import com.owlcreativestudio.unify.services.ARService;
 import com.owlcreativestudio.unify.services.CameraService;
 import com.owlcreativestudio.unify.services.LocationService;
 import com.owlcreativestudio.unify.services.PositionService;
+import com.owlcreativestudio.unify.services.ProfileDetailsService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ARActivity extends AppCompatActivity {
-    FrameLayout contentLayout;
-    LinearLayout detailsLayout;
     private boolean isVisible;
 
     private final Handler mHideHandler = new Handler();
-    private FrameLayout cameraLayout;
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
     private static final int UI_ANIMATION_DELAY = 300;
@@ -93,15 +92,20 @@ public class ARActivity extends AppCompatActivity {
 
         //set layouts
         masterLayout = findViewById(R.id.master_layout);
-        cameraLayout = (FrameLayout) findViewById(R.id.camera_layout);
-        contentLayout = (FrameLayout) findViewById(R.id.content_layout);
-        detailsLayout = (LinearLayout) findViewById(R.id.details_layout);
         controlsLayout = findViewById(R.id.controls_layout);
+        FrameLayout cameraLayout = (FrameLayout) findViewById(R.id.camera_layout);
+        FrameLayout arLayout = (FrameLayout) findViewById(R.id.ar_layout);
+        LinearLayout appProfileLayout = (LinearLayout) findViewById(R.id.app_profile_layout);
+        LinearLayout facebookProfileLayout = (LinearLayout) findViewById(R.id.facebook_profile_layout);
+        LinearLayout linkedInProfileLayout = (LinearLayout) findViewById(R.id.linkedin_profile_layout);
+        LinearLayout twitterProfileLayout = (LinearLayout) findViewById(R.id.twitter_profile_layout);
+        LinearLayout navigationProfilesLayout = (LinearLayout) findViewById(R.id.navigation_profiles_layout);
 
         isVisible = true;
 
         //set services
-        arService = new ARService(this, contentLayout, detailsLayout, 10, 50);
+        ProfileDetailsService profileDetailsService = new ProfileDetailsService(this, arLayout, appProfileLayout, facebookProfileLayout, linkedInProfileLayout, twitterProfileLayout, navigationProfilesLayout);
+        arService = new ARService(this, 10, 50, arLayout, profileDetailsService);
         cameraService = new CameraService(this, cameraLayout, arService);
         locationService = new LocationService(this, arService);
         positionService = new PositionService(this, arService);
@@ -213,11 +217,17 @@ public class ARActivity extends AppCompatActivity {
 //        location.setLatitude(45);
 //        location.setLongitude(45);
 
+        FacebookProfile fbp = new FacebookProfile();
+        fbp.setName("Qutory");
+        fbp.setPictureLink("https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/1544311_831950490182533_4983436575430649866_n.jpg?oh=1a85597d84b8b2534be700249d10836b&oe=59636704");
+
         AdjacentPerson adjacentPerson = new AdjacentPerson();
         adjacentPerson.setDisplayName("Qutory");
         adjacentPerson.setImageUrl("https://avatars3.githubusercontent.com/u/13658952?v=3&s=460");
         adjacentPerson.setId("" + Math.random());
         adjacentPerson.setLocation(location);
+        adjacentPerson.setFacebookProfile(fbp);
+
 
         return adjacentPerson;
     }
