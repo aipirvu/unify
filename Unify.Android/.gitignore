@@ -4,5 +4,6 @@
 .DS_Store
 /local.properties
 /build
+/linkedin-sdk/build
 /captures
 .externalNativeBuild
