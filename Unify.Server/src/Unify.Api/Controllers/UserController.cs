@@ -14,5 +14,14 @@ namespace Unify.Api.Controllers
     {
         public UserController(IRepository<IUserAccount> userRepository) : base(userRepository)
         { }
+
+        [HttpPut]
+        override public void Put([FromBody] IUserAccount userAccount)
+        {
+            IUserAccount oldUserAccount = base._repository.Get(userAccount.Id);
+            userAccount.Password = oldUserAccount.Password;
+            userAccount.Salt = oldUserAccount.Salt;
+            base.Put(userAccount);
+        }
     }
 }

@@ -41,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         View loginLayout = findViewById(R.id.login_layout);
-        View loginProgress = findViewById(R.id.login_progress);
+        View loginProgress = findViewById(R.id.progress_circle);
         masterLayout = findViewById(R.id.master_layout);
 
         progressHelper = new ProgressHelper(loginProgress, loginLayout);

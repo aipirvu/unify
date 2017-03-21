@@ -12,7 +12,7 @@ namespace Unify.Api.Controllers
     public abstract class UnifyController<Entity> : Controller
         where Entity : class, IUnifyEntity
     {
-        private IRepository<Entity> _repository;
+        protected IRepository<Entity> _repository;
 
         public UnifyController(IRepository<Entity> repository)
         {
@@ -20,34 +20,31 @@ namespace Unify.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public Entity Get(string id)
+        public virtual Entity Get(string id)
         {
             return _repository.Get(id);
         }
 
         [HttpGet]
-        public IEnumerable<Entity> Get()
+        public virtual IEnumerable<Entity> Get()
         {
             return _repository.Get();
         }
 
         [HttpPost]
-        public void Post([FromBody]Entity user)
+        public virtual void Post([FromBody]Entity user)
         {
             _repository.Create(user);
         }
 
         [HttpPut]
-        public void Put([FromBody]Entity user)
+        public virtual void Put([FromBody]Entity user)
         {
-            /* todo fix ObjectId serialization issues:
-             * http://stackoverflow.com/questions/7695730/mongodb-c-id-serialization-best-pattern/7982411#7982411
-             * */
             _repository.Update(user);
         }
 
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public virtual void Delete(string id)
         {
             _repository.Delete(id);
         }

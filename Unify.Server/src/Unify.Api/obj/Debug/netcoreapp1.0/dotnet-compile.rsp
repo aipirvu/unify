@@ -195,10 +195,12 @@ C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\Controllers\Use
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\AppLoginCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\FacebookLoginCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\FacebookProfileCustomConverter.cs
+C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\LinkedInProfileCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\RegisterCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\UnifyCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\UserCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\AppLogin.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\FacebookLogin.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\FacebookProfile.cs
+C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\LinkedInProfile.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\Register.cs

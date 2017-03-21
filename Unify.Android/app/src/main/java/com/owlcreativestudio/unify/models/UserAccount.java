@@ -6,6 +6,7 @@ public class UserAccount {
     String email = "";
     String pictureLink = "";
     FacebookProfile facebookProfile;
+    LinkedInProfile linkedInProfile;
 
     public String getId() {
         return id;
@@ -45,5 +46,13 @@ public class UserAccount {
 
     public void setFacebookProfile(FacebookProfile facebookProfile) {
         this.facebookProfile = facebookProfile;
+    }
+
+    public LinkedInProfile getLinkedInProfile() {
+        return linkedInProfile;
+    }
+
+    public void setLinkedInProfile(LinkedInProfile linkedInProfile) {
+        this.linkedInProfile = linkedInProfile;
     }
 }

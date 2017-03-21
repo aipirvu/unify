@@ -63,6 +63,7 @@
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\IAppLogin.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\IFacebookLogin.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\IFacebookProfile.cs"
+"C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\ILinkedInProfile.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\IRegister.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\IUnifyEntity.cs"
 "C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Common\Interfaces\IUserAccount.cs"

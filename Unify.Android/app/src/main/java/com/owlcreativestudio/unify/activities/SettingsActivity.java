@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.linkedin.platform.APIHelper;
 import com.linkedin.platform.LISessionManager;
 import com.linkedin.platform.errors.LIApiError;
@@ -16,13 +18,23 @@ import com.linkedin.platform.listeners.ApiResponse;
 import com.linkedin.platform.listeners.AuthListener;
 import com.linkedin.platform.utils.Scope;
 import com.owlcreativestudio.unify.R;
+import com.owlcreativestudio.unify.helpers.ProgressHelper;
+import com.owlcreativestudio.unify.models.LinkedInProfile;
+import com.owlcreativestudio.unify.services.LinkedInService;
 
 public class SettingsActivity extends AppCompatActivity {
+    private LinkedInService linkedInService;
+    private ProgressHelper progressHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        View loginProgress = findViewById(R.id.progress_circle);
+        View controlsLayout = findViewById(R.id.controls_layout);
+        progressHelper = new ProgressHelper(loginProgress, controlsLayout);
+        this.linkedInService = new LinkedInService(this, progressHelper);
     }
 
     @Override
@@ -31,38 +43,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void connectWithLinkedIn(View view) {
-        final Activity thisActivity = this;
-        LISessionManager.getInstance(getApplicationContext()).init(thisActivity, buildScope(), new AuthListener() {
-            @Override
-            public void onAuthSuccess() {
-                Log.d("LinkedIn", "auth success");
-                getProfile();
-            }
-
-            @Override
-            public void onAuthError(LIAuthError error) {
-                //todo notify user
-            }
-        }, true);
+        progressHelper.showProgress(true);
+        linkedInService.connectWithLinkedIn(getApplicationContext());
     }
 
-    private static Scope buildScope() {
-        return Scope.build(Scope.R_BASICPROFILE);
-    }
-
-    private void getProfile() {
-        String url = "https://api.linkedin.com/v1/people/~";
-        APIHelper apiHelper = APIHelper.getInstance(getApplicationContext());
-        apiHelper.getRequest(this, url, new ApiListener() {
-            @Override
-            public void onApiSuccess(ApiResponse apiResponse) {
-                // Success!
-            }
-
-            @Override
-            public void onApiError(LIApiError liApiError) {
-                // Error making GET request!
-            }
-        });
-    }
 }

@@ -41,17 +41,29 @@ public class UserAccountService {
     }
 
     public boolean register(Register register) {
+        boolean success = true;
         try {
             HttpHelper.post(UrlHelper.getRegisterUrl(), register);
-            return true;
         } catch (Exception ex) {
+            success = false;
             if (ex.getMessage().contains("409")) {
                 handleError(ex, "The email address is already used.");
             } else {
                 handleError(ex);
             }
         }
-        return false;
+        return success;
+    }
+
+    public boolean update(UserAccount userAccount) {
+        boolean success = true;
+        try {
+            HttpHelper.put(UrlHelper.getUserUrl(), userAccount);
+        } catch (Exception ex) {
+            handleError(ex);
+            success = false;
+        }
+        return success;
     }
 
     private void handleError(Exception ex) {

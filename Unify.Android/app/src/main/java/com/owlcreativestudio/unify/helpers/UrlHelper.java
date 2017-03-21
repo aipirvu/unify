@@ -10,12 +10,15 @@ public class UrlHelper {
     public static String getUserUrl() {
         return BASE_ADDRESS + "/user";
     }
+
     public static String getAppLoginUrl() {
         return BASE_ADDRESS + "/login/app";
     }
+
     public static String getFacebookLoginUrl() {
         return BASE_ADDRESS + "/login/facebook";
     }
+
     public static String getRegisterUrl() {
         return BASE_ADDRESS + "/register";
     }

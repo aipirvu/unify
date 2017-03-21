@@ -7,6 +7,14 @@
     android:background="#00000000"
     tools:context="com.owlcreativestudio.unify.activities.SettingsActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_circle"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/controls_layout"
         android:layout_width="match_parent"

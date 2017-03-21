@@ -12,6 +12,7 @@ namespace Unify.Common.Interfaces
         string Password { get; set; }
         string Salt { get; set; }
         string Email { get; set; }
-        IFacebookProfile facebookProfile { get; set; }
+        IFacebookProfile FacebookProfile { get; set; }
+        ILinkedInProfile LinkedInProfile { get; set; }
     }
 }
