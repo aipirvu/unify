@@ -40,6 +40,13 @@
             android:layout_height="wrap_content"
             android:text="@string/connect_twitter" />
 
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/connect_with_twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+
         <Button
             android:id="@+id/button3"
             android:layout_width="match_parent"

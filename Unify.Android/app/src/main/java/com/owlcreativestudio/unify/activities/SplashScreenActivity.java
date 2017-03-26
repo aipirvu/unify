@@ -14,13 +14,23 @@ import com.owlcreativestudio.unify.R;
 import com.owlcreativestudio.unify.models.UserAccount;
 import com.owlcreativestudio.unify.services.SharedPreferencesService;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
 import java.security.MessageDigest;
 
 public class SplashScreenActivity extends Activity {
 
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    private static final String TWITTER_KEY = "7OIleWASvn1WmEf96ijAA1G54";
+    private static final String TWITTER_SECRET = "zXZSoAAtEstNOL6VOwvQURE2ol3jpN62HW40YS4E1MnsjS6FHD";
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_splash_screen);
 
         final int SPLASH_SCREEN_DISPLAY_DURATION = 500;

@@ -53,6 +53,7 @@ namespace Unify.Api
                         options.SerializerSettings.Converters.Add(new FacebookProfileCustomConverter());
                         options.SerializerSettings.Converters.Add(new LinkedInProfileCustomConverter());
                         options.SerializerSettings.Converters.Add(new FacebookLoginCustomConverter());
+                        options.SerializerSettings.Converters.Add(new TwitterProfileCustomConverter());
                         options.SerializerSettings.Converters.Add(new AppLoginCustomConverter());
                     });
 
@@ -83,6 +84,7 @@ namespace Unify.Api
             BsonClassMap.RegisterClassMap<UserAccount>();
             BsonClassMap.RegisterClassMap<FacebookProfile>();
             BsonClassMap.RegisterClassMap<LinkedInProfile>();
+            BsonClassMap.RegisterClassMap<TwitterProfile>();
         }
 
     }

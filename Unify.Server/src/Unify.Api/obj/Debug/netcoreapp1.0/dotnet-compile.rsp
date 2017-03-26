@@ -197,6 +197,7 @@ C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\FacebookProfileCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\LinkedInProfileCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\RegisterCustomConverter.cs
+C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\TwitterProfileCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\UnifyCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\CustomCoverters\UserCustomConverter.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\AppLogin.cs
@@ -204,3 +205,4 @@ C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\Face
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\FacebookProfile.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\LinkedInProfile.cs
 C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\Register.cs
+C:\Users\aipir\Documents\GitHub\unify\Unify.Server\src\Unify.Api\ViewModels\TwitterProfile.cs

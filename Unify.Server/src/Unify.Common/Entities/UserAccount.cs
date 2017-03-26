@@ -19,5 +19,6 @@ namespace Unify.Common.Entities
         public string Email { get; set; }
         public IFacebookProfile FacebookProfile { get; set; }
         public ILinkedInProfile LinkedInProfile { get; set; }
+        public ITwitterProfile TwitterProfile { get; set; }
     }
 }

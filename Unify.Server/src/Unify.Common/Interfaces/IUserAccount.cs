@@ -14,5 +14,6 @@ namespace Unify.Common.Interfaces
         string Email { get; set; }
         IFacebookProfile FacebookProfile { get; set; }
         ILinkedInProfile LinkedInProfile { get; set; }
+        ITwitterProfile TwitterProfile { get; set; }
     }
 }
